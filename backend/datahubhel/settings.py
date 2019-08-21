@@ -8,8 +8,8 @@ assert os.path.exists(checkout_dir('backend/manage.py'))
 
 parent_dir = checkout_dir.path('..')
 etc_dir = parent_dir('etc')
-env_file = etc_dir('env') if os.path.isdir(etc_dir) else checkout_dir('.env')
-root_dir = parent_dir if os.path.isdir(etc_dir) else checkout_dir
+env_file = checkout_dir('.env')  # etc_dir('env') if os.path.isdir(etc_dir) else checkout_dir('.env')
+root_dir = checkout_dir  # parent_dir if os.path.isdir(etc_dir) else checkout_dir
 default_var_root = root_dir('var')
 default_log_root = root_dir('log')
 
@@ -20,7 +20,8 @@ env = environ.Env(
     VAR_ROOT=(str, default_var_root),
     LOG_ROOT=(str, default_log_root),
     ALLOWED_HOSTS=(list, []),
-    DATABASE_URL=(str, 'postgis:///datahubhel'),
+    DATABASE_URL=(str,
+                  'postgis://datahubhel:datahubhel@datahubhel_db/datahubhel'),
     CACHE_URL=(str, 'locmemcache://'),
     EMAIL_URL=(str, 'consolemail://'),
     SENTRY_DSN=(str, ''),
