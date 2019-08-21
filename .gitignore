@@ -2,3 +2,4 @@
 /venv
 /log/*
 !/log/.gitkeep
+__pycache__/
