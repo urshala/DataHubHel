@@ -1,6 +1,6 @@
 {"name": "min-sink",
     "config": {"connector.class":"io.confluent.connect.jdbc.JdbcSinkConnector",
-      "topics": "MIN_BATTERY",
+      "topics": "LOUDNOISE",
       "key.converter": "org.apache.kafka.connect.storage.StringConverter",
 
       "value.converter": "io.confluent.connect.avro.AvroConverter",
@@ -9,9 +9,10 @@
       "connection.url": "jdbc:postgresql://postgres:5432/noisedata",
       "connection.user": "postgres",
       "connection.password": "postgres",
-      "auto.create": "true",
+
       "auto.evolve": "true",
       "insert.mode": "upsert",
+      "auto.create": "true",
 
       "pk.mode": "record_key",
       "pk.fields": "SENSOR_NAME"

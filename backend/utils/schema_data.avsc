@@ -1,0 +1,89 @@
+[
+    {
+        "type": "record",
+        "namespace": "noiseNameSpace",
+        "name": "sensor",
+        "fields": [
+            {
+                "name": "sensor_name",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "type":"record",
+        "namespace": "noiseNameSpace",
+        "name": "results",
+        "fields": [
+            {
+                "name": "level",
+                "type": "float"
+            },
+            {
+                "name": "overload",
+                "type":["boolean", "null"]
+            },
+            {
+                "name": "underrange",
+                "type":["boolean", "null"]
+            },
+            {
+                "name": "battery",
+                "type": ["float", "null"]
+            },
+            {
+                "name": "power",
+                "type": ["boolean", "null"]
+            },
+            {
+                "name": "wifi_strength",
+                "type": ["float", "null"]
+            },
+            {
+                "name": "modem_strength",
+                "type": ["float", "null"]
+            },
+            {
+                "name": "laeq1s_registers",
+                "type": ["string", "null"]
+            }
+        ]
+    },
+    {
+        "type": "record",
+        "namespace": "noiseNameSpace",
+        "name": "thing",
+        "fields": [
+            {
+                "name": "thing_name",
+                "type": "string"
+            },
+            {
+                "name": "location",
+                "type": {
+                    "type": "array",
+                    "items":"float"
+                    }
+            }
+        ]
+    },
+    {
+        "type": "record",
+        "namespace": "noiseNameSpace",
+        "name": "sensorVal",
+        "fields":[
+            {
+                "name": "sensor",
+                "type": "noiseNameSpace.sensor"
+            },
+            {
+                "name": "thing",
+                "type": "noiseNameSpace.thing"
+            },
+            {
+                "name": "results",
+                "type": "noiseNameSpace.results"
+            }
+        ]
+    }
+]

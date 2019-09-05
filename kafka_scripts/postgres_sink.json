@@ -5,9 +5,9 @@
 
 
       "value.converter": "io.confluent.connect.avro.AvroConverter",
-      "value.converter.schema.registry.url": "http://schema-registry:8081",
+      "value.converter.schema.registry.url": "http://schema-registry:8082",
 
-      "connection.url": "jdbc:postgresql://postgres:5432/noisedata",
+      "connection.url": "jdbc:postgresql://95.216.220.203:5432/noisedata",
       "connection.user": "postgres",
       "connection.password": "postgres",
       "auto.create": "true",

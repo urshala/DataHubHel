@@ -62,45 +62,45 @@ services:
       - ./backend:/backend
     stdin_open: true
     tty: true
-  ksql-server:
-      image: confluentinc/cp-ksql-server:5.3.0
-      hostname: ksql-server
-      container_name: ksql-server
-      ports:
-        - 8088:8088
-      environment:
-        KSQL_CONFIG_DIR: "/etc/ksql"
-        KSQL_LOG4J_OPTS: "-Dlog4j.configuration=file:/etc/ksql/log4j-rolling.properties"
-        KSQL_BOOTSTRAP_SERVERS: ${KAFKA_CLUSTERS}
-        KSQL_HOST_NAME: ksql-server
-        KSQL_APPLICATION_ID: "cp-all-in-one"
-        KSQL_LISTENERS: "http://ksql-server:8088"
-        KSQL_CACHE_MAX_BYTES_BUFFERING: 0
-        KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
-        KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+  # ksql-server:
+  #     image: confluentinc/cp-ksql-server:5.3.0
+  #     hostname: ksql-server
+  #     container_name: ksql-server
+  #     ports:
+  #       - 8088:8088
+  #     environment:
+  #       KSQL_CONFIG_DIR: "/etc/ksql"
+  #       KSQL_LOG4J_OPTS: "-Dlog4j.configuration=file:/etc/ksql/log4j-rolling.properties"
+  #       KSQL_BOOTSTRAP_SERVERS: ${KAFKA_CLUSTERS}
+  #       KSQL_HOST_NAME: ksql-server
+  #       KSQL_APPLICATION_ID: "cp-all-in-one"
+  #       KSQL_LISTENERS: "http://ksql-server:8088"
+  #       KSQL_CACHE_MAX_BYTES_BUFFERING: 0
+  #       KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+  #       KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
 
-        # for TLS connection
-        KSQL_SECURITY_PROTOCOL: ssl
-        KSQL_SSL_KEYSTORE_TYPE: PKCS12
-        KSQL_SSL_KEYSTORE_LOCATION: client.keystore.p12
-        KSQL_SSL_KEYSTORE_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
-        KSQL_SSL_KEY_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
-        KSQL_SSL_TRUSTSTORE_TYPE: JKS
-        KSQL_SSL_TRUSTSTORE_LOCATION: client.truststore.jks
-        KSQL_SSL_TRUSTSTORE_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
-        KSQL_KSQL_SERVICE_ID: dummy_service
+  #       # for TLS connection
+  #       KSQL_SECURITY_PROTOCOL: ssl
+  #       KSQL_SSL_KEYSTORE_TYPE: PKCS12
+  #       KSQL_SSL_KEYSTORE_LOCATION: client.keystore.p12
+  #       KSQL_SSL_KEYSTORE_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
+  #       KSQL_SSL_KEY_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
+  #       KSQL_SSL_TRUSTSTORE_TYPE: JKS
+  #       KSQL_SSL_TRUSTSTORE_LOCATION: client.truststore.jks
+  #       KSQL_SSL_TRUSTSTORE_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
+  #       KSQL_KSQL_SERVICE_ID: dummy_service
 
-        # for TLS schema registry connection
-        KSQL_KSQL_SCHEMA_REGISTRY_URL: ${SCHEMA_REGISTRY_URL}
-        KSQL_KSQL_SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION: schema_registry.truststore.jks
-        KSQL_KSQL_SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
-        KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_CREDENTIALS_SOURCE: "USER_INFO"
-        KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO: ${AVAIN_USER_PASSWORD}
+  #       # for TLS schema registry connection
+  #       KSQL_KSQL_SCHEMA_REGISTRY_URL: ${SCHEMA_REGISTRY_URL}
+  #       KSQL_KSQL_SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION: schema_registry.truststore.jks
+  #       KSQL_KSQL_SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
+  #       KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_CREDENTIALS_SOURCE: "USER_INFO"
+  #       KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO: ${AVAIN_USER_PASSWORD}
 
-      volumes:
-        - ./secrets/client.keystore.p12:/client.keystore.p12
-        - ./secrets/client.truststore.jks:/client.truststore.jks
-        - ./secrets/schema_registry.truststore.jks:/schema_registry.truststore.jks
+  #     volumes:
+  #       - ./secrets/client.keystore.p12:/client.keystore.p12
+  #       - ./secrets/client.truststore.jks:/client.truststore.jks
+  #       - ./secrets/schema_registry.truststore.jks:/schema_registry.truststore.jks
   ksql-client:
     image: confluentinc/cp-ksql-cli:5.3.0
     container_name: ksql-cli
@@ -123,12 +123,13 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
   kafka-sink:
-    image: postgres:9.6.6-alpine
+    image: kartoza/postgis
     hostname: postgres
     container_name: postgres
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: noisedata
+      POSTGRES_USER: postgres
+      POSTGRES_DBNAME: noisedata
+      POSTGRES_PASS: postgres
     ports:
       - "5430:5432"
     volumes:
@@ -160,33 +161,33 @@ services:
         CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
         CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
         CONNECT_PLUGIN_PATH: /usr/share/java,/etc/kafka-connect/uber/,/etc/kafka-connect/plugins
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
-    container_name: elasticsearch
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms750m -Xmx750m"
-      - discovery.type=single-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - elasticsearch-vol:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.3.0
-    container_name: kibana
-    volumes:
-      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
-    restart: always
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+  #   container_name: elasticsearch
+  #   environment:
+  #     - node.name=elasticsearch
+  #     - cluster.name=docker-cluster
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms750m -Xmx750m"
+  #     - discovery.type=single-node
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - elasticsearch-vol:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9200:9200
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.3.0
+  #   container_name: kibana
+  #   volumes:
+  #     - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+  #   restart: always
+  #   ports:
+  #     - 5601:5601
+  #   depends_on:
+  #     - elasticsearch
   # logstash:
   #   image: docker.elastic.co/logstash/logstash:7.3.0
   #   environment:
@@ -199,7 +200,26 @@ services:
   #     - 9600:9600
   #   depends_on:
   #     - elasticsearch
-
+  #old ksql stuffs
+  ksql-server:
+    image: confluentinc/cp-ksql-server:5.3.0
+    hostname: ksql-server
+    container_name: ksql-server
+    depends_on:
+      - kafka
+    ports:
+      - 8088:8088
+    environment:
+      KSQL_CONFIG_DIR: "/etc/ksql"
+      KSQL_LOG4J_OPTS: "-Dlog4j.configuration=file:/etc/ksql/log4j-rolling.properties"
+      KSQL_BOOTSTRAP_SERVERS: "kafka:9092"
+      KSQL_HOST_NAME: ksql-server
+      KSQL_APPLICATION_ID: "cp-all-in-one"
+      KSQL_LISTENERS: "http://ksql-server:8088"
+      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+      KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
 volumes:
   elasticsearch-vol:
   postgres-data:

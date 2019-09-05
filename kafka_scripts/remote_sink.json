@@ -1,0 +1,28 @@
+{
+    "name": "json-sink",
+    "config":{
+        "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+        "tasks.max": "1",
+        "topics": "LOUDNOISE",
+
+        "connection.url": "jdbc:postgresql://95.216.220.203:5432/noisedata",
+        "connection.user": "postgres",
+        "connection.password": "postgres",
+
+        "insert.mode": "upsert",
+        "pk.mode": "record_key",
+        "auto.create": "true",
+        "auto.evolve": "true",
+        "pk.fields": "SENSOR_NAME",
+
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url": "https://kafka-1a4f1159-forumvirium-feab.aivencloud.com:12063",
+        "value.converter.basic.auth.credentials.source": "USER_INFO",
+        "value.converter.basic.auth.user.info": "avnadmin:xnga6baarrlsgyn6",
+
+        "errors.log.enable": "true",
+        "errors.log.include.messages": "true"
+    }
+}

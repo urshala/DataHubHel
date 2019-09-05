@@ -1,0 +1,46 @@
+1. Download Access Key, Access Certificate and CA certificate from aiven console. You can get this when you login to the aiven console and go to overview of Kafka.
+
+2. Execute this command to add all the keys to keystore named client.keystore.p12:
+  openssl pkcs12 -export -inkey service.key -in service.cert -out client.keystore.p12 -name service_key
+
+3. Execute this command to create to create truststore named client.keystore.jks to hold all the certificates. You are prompted for a secret. The secret needs to be passed to KSQL_SSL_KEYSTORE_PASSWORD
+and KSQL_SSL_KEY_PASSWORD.
+  keytool -import -file ca.pem -alias CA -keystore client.truststore.jks
+
+
+4. Add these files to environment variable of ksql-server:
+    # for TLS connection
+    KSQL_SECURITY_PROTOCOL: ssl
+    KSQL_SSL_KEYSTORE_TYPE: PKCS12
+    KSQL_SSL_KEYSTORE_LOCATION: client.keystore.p12
+    KSQL_SSL_KEYSTORE_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
+    KSQL_SSL_KEY_PASSWORD: ${KSQL_SSL_KEY_PASSWORD}
+    KSQL_SSL_TRUSTSTORE_TYPE: JKS
+    KSQL_SSL_TRUSTSTORE_LOCATION: client.truststore.jks
+    KSQL_SSL_TRUSTSTORE_PASSWORD: secret
+    KSQL_KSQL_SERVICE_ID: dummy_service
+
+Read this more info: https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
+
+
+Schema registry and KSQL server use TLS for communication. So we need to pass the environment variables that will make this happen and also need to follow the similar pattern as above.
+1. Get the root CA from schema registry. Use the port of schema registry here. Also project_hostname:schema_registry port. Like
+kafka-1a4f1159-forumvirium-feab.aivencloud.com:12063. The command is
+  openssl s_client -connect service-project.avncloud.com:port \
+  -showcerts < /dev/null 2>/dev/null | \
+  awk '/BEGIN CERT/{s=1}; s{t=t "\n" $0};
+       /END CERT/ {last=t; t=""; s=0}; END{print last}' \
+  > /tmp/ca.cert
+
+2. Once you get the certificate, use it to create the trust store.
+  keytool -import -file /tmp/ca.cert -alias CA -keystore  /schema_registry.truststore.jks
+
+3. Now you have the required files. Add it to environment of ksql-server docker-compose like this:
+    KSQL_KSQL_SCHEMA_REGISTRY_URL: "https://kafka-1a4f1159-forumvirium-feab.aivencloud.com:12063"
+    KSQL_KSQL_SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION: schema_registry.truststore.jks
+    KSQL_KSQL_SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD: ${KSQL_SSL_KEY_PASSWORD} # is secret
+    KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_CREDENTIALS_SOURCE: "USER_INFO"
+    KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO: "avnadmin:xnga6baarrlsgyn6" # format is "admin:password"
+
+
+https://help.aiven.io/en/articles/2281428-using-ksql-with-aiven-kafka

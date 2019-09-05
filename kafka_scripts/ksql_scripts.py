@@ -35,7 +35,9 @@ def _create_noise_stream():
         f" WITH (kafka_topic='{KafkaConstants.KAFKA_TOPIC.value}',"
         f" value_format='{KafkaConstants.VALUE_FORMAT.value}');"
     )
+    cmd = 'CREATE STREAM NOISE_STREAM WITH (KAKFA_TOPIC=\'noise\', VALUE_FORMAT=\'AVRO\');'
     response = _execute_ksql_commands(command)
+    print(response.json())
     assert response.status_code == 200
 
     print(f'KAFKA/KSQL:: {KafkaConstants.NOISE_STREAM.value} STREAM CREATED')
@@ -141,7 +143,7 @@ def create_ksql_streams():
     _create_loud_noise_stream()  # Registers and runs a stream for where level > theshold value also save to database.
     _create_min_value_table()
     _create_OPEN311_topic()  # Registers and runs stream where level > threshold value.
-    _create_location_based_steam()
+    # _create_location_based_steam()
 
 
 
