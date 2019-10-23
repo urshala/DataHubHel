@@ -1,7 +1,7 @@
 import requests
 import json
 
-from . import constants
+from . import settings
 
 headers = {
     'Accept': 'application/vnd.ksql.v1+json',
@@ -12,7 +12,7 @@ headers = {
 def _execute_ksql_commands(command=None):
     assert command
     response = requests.post(
-        constants.KSQL_SERVER,
+        settings.KSQL_SERVER,
         headers=headers,
         data=json.dumps({'ksql': command})
     )
@@ -31,14 +31,14 @@ def _create_noise_stream():
     is the base of all other topics/streams/table
     """
     command = (
-        f"CREATE STREAM {constants.NOISE_STREAM}"
-        f" WITH (kafka_topic='{constants.KAFKA_TOPIC}',"
-        f" value_format='{constants.VALUE_FORMAT}');"
+        f"CREATE STREAM {settings.NOISE_STREAM}"
+        f" WITH (kafka_topic='{settings.KAFKA_TOPIC}',"
+        f" value_format='{settings.VALUE_FORMAT}');"
     )
     response = _execute_ksql_commands(command)
     assert response.status_code == 200
 
-    print(f'KAFKA/KSQL:: {constants.NOISE_STREAM} STREAM CREATED')
+    print(f'KAFKA/KSQL:: {settings.NOISE_STREAM} STREAM CREATED')
 
 
 def _create_location_based_steam():
@@ -49,7 +49,7 @@ def _create_location_based_steam():
         f"CREATE STREAM ELASTIC_LOCATION_STREAM"
         f" AS SELECT SENSOR->SENSOR_NAME AS SENSOR_NAME,"
         f" THING->LOCATION AS LOCATION"
-        f" FROM {constants.NOISE_STREAM}"
+        f" FROM {settings.NOISE_STREAM}"
         f" PARTITION BY SENSOR_NAME;"
     )
     response = _execute_ksql_commands(command)
@@ -64,12 +64,12 @@ def _create_sensor_name_keyed_stream():
     if we want to save the message to database.
     """
     command = (
-        f"CREATE STREAM {constants.NOISE_STREAM_KEYED}"
-        f" AS SELECT * FROM {constants.NOISE_STREAM}"
+        f"CREATE STREAM {settings.NOISE_STREAM_KEYED}"
+        f" AS SELECT * FROM {settings.NOISE_STREAM}"
         f" PARTITION BY sensor_name;"
     )
     command1 = (
-        f"CREATE STREAM {constants.NOISE_STREAM_KEYED}"
+        f"CREATE STREAM {settings.NOISE_STREAM_KEYED}"
         f" AS SELECT SENSOR->SENSOR_NAME AS SENSOR_NAME,"
         f" RESULTS->LEVEL AS LEVEL,"
         f" RESULTS->BATTERY AS BATTERY,"
@@ -78,61 +78,61 @@ def _create_sensor_name_keyed_stream():
         f" THING->THING_NAME AS THING_NAME,"
         f" THING->LOCATION[0] AS LON,"
         f" THING->LOCATION[1] AS LAT"
-        f" FROM {constants.NOISE_STREAM}"
+        f" FROM {settings.NOISE_STREAM}"
         f" PARTITION BY SENSOR_NAME;"
     )
     response = _execute_ksql_commands(command1)
     assert response.status_code == 200
 
-    print(f"KAFKA/KSQL:: STREAM {constants.NOISE_STREAM_KEYED} CREATED")
+    print(f"KAFKA/KSQL:: STREAM {settings.NOISE_STREAM_KEYED} CREATED")
 
 
 def _create_min_value_table():
-    _check_stream_create_status(constants.NOISE_STREAM_KEYED)
+    _check_stream_create_status(settings.NOISE_STREAM_KEYED)
     command = (
-        f"CREATE TABLE {constants.MIN_VALUE_TABLE} AS"
+        f"CREATE TABLE {settings.MIN_VALUE_TABLE} AS"
         f" SELECT SENSOR_NAME, MIN(BATTERY) AS BATTERY FROM"
         f" NOISE_STREAM_KEYED GROUP BY sensor_name;"
     )
     response = _execute_ksql_commands(command)
     assert response.status_code == 200
 
-    print(f"KAFKA/KSQL:: TABLE/TOPIC {constants.MIN_VALUE_TABLE} CREATED")
+    print(f"KAFKA/KSQL:: TABLE/TOPIC {settings.MIN_VALUE_TABLE} CREATED")
 
 
 def _create_OPEN311_topic():
-    _check_stream_create_status(constants.NOISE_STREAM)
+    _check_stream_create_status(settings.NOISE_STREAM)
     command = (
-        f"CREATE STREAM {constants.ALERT_TOPIC} AS"
-        f" SELECT * FROM {constants.NOISE_STREAM} WHERE"
-        # f" SELECT * FROM {constants.NOISE_STREAM_KEYED} WHERE"
+        f"CREATE STREAM {settings.ALERT_TOPIC} AS"
+        f" SELECT * FROM {settings.NOISE_STREAM} WHERE"
+        # f" SELECT * FROM {settings.NOISE_STREAM_KEYED} WHERE"
         # We can't create the functioning stream from keyed_stream so use original
         f" RESULTS->LEVEL > 7.0 AND RESULTS->OVERLOAD = True;"
     )
     response = _execute_ksql_commands(command)
     assert response.status_code == 200
 
-    print (f'KAFKA/KSQL:: {constants.ALERT_TOPIC} CREATED')
+    print (f'KAFKA/KSQL:: {settings.ALERT_TOPIC} CREATED')
 
 
 def _create_loud_noise_stream():
-    _check_stream_create_status(constants.NOISE_STREAM)
+    _check_stream_create_status(settings.NOISE_STREAM)
     command = (
-        f"CREATE STREAM {constants.LOUD_NOISE_TOPIC}"
+        f"CREATE STREAM {settings.LOUD_NOISE_TOPIC}"
         f" AS SELECT SENSOR_NAME AS SENSOR_NAME,"
         f" LEVEL, BATTERY, LOCATION[0] AS LON,"
-        f" LOCATION[1] AS LAT from {constants.NOISE_STREAM}"
+        f" LOCATION[1] AS LAT from {settings.NOISE_STREAM}"
         f" WHERE level > 4.0 PARTITION BY sensor_name;"
     )
     command1 = (
-        f"CREATE STREAM {constants.LOUD_NOISE_TOPIC}"
-        f" AS SELECT * from {constants.NOISE_STREAM_KEYED}"
+        f"CREATE STREAM {settings.LOUD_NOISE_TOPIC}"
+        f" AS SELECT * from {settings.NOISE_STREAM_KEYED}"
         f" WHERE LEVEL > 4.0;"
     )
     response = _execute_ksql_commands(command1)
     assert response.status_code == 200
 
-    print (f'KAFKA/KSQL:: {constants.LOUD_NOISE_TOPIC} STREAM CREATED')
+    print (f'KAFKA/KSQL:: {settings.LOUD_NOISE_TOPIC} STREAM CREATED')
 
 
 def create_ksql_streams():

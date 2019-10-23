@@ -4,7 +4,7 @@ import time
 from confluent_kafka import avro
 from confluent_kafka.avro import AvroProducer
 
-from . import constants
+from . import settings
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -57,8 +57,8 @@ def produce_sample_data():
     key_schema = avro.load(data_path('schema_key.avsc'))
     producer = AvroProducer(
         {
-            'bootstrap.servers': constants.KAFKA_SERVER,
-            'schema.registry.url': constants.SCHEMA_REGISTRY_SERVER
+            'bootstrap.servers': settings.KAFKA_SERVER,
+            'schema.registry.url': settings.SCHEMA_REGISTRY_SERVER
         },
         default_value_schema=value_schema,
         default_key_schema=key_schema
@@ -74,7 +74,7 @@ def produce_sample_data():
 
 
         producer.produce(
-            topic=constants.KAFKA_TOPIC,
+            topic=settings.KAFKA_TOPIC,
             value=sample_data,
             key={'sensor_name': sensor_name}
         )
