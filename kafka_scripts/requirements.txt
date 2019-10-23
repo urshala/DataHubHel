@@ -1,1 +1,8 @@
-requests
+avro-python3==1.9.1
+certifi==2019.9.11
+chardet==3.0.4
+confluent-kafka[avro]==1.2.0
+fastavro==0.22.5
+idna==2.8
+requests==2.22.0
+urllib3==1.25.6
