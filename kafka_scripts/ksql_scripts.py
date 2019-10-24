@@ -12,7 +12,7 @@ headers = {
 def _execute_ksql_commands(command=None):
     assert command
     response = requests.post(
-        settings.KSQL_SERVER,
+        settings.KSQL_URL,
         headers=headers,
         data=json.dumps({'ksql': command})
     )

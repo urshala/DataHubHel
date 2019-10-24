@@ -1,6 +1,9 @@
 import os
 import json
 import requests
+from urllib.parse import urlparse
+
+from . import settings
 
 SINK_CONFIGURATION_FILES = [
     './kafka_scripts/postgres_sink.json',
@@ -9,17 +12,6 @@ SINK_CONFIGURATION_FILES = [
     './kafka_scripts/elastic_sink_location.json',
 ]
 
-CONNECT_SERVER = os.getenv(
-    'CONNECT_SERVER', 'http://localhost:8083/connectors'
-)
-
-REMOTE_CONNECTOR_SETTINGS_MAPPINGS = {
-    "key.converter.basic.auth.credentials.source": os.getenv('KEY_CONVERTER_BASIC_AUTH_CREDENTIALS_SOURCE'),
-    "key.converter.schema.registry.basic.auth.user.info": os.getenv('BASIC_AUTH_USER_CREDENTIALS'),
-    "value.converter.schema.registry.url": os.getenv('VALUE_CONVERTER_SCHEMA_REGISTRY_URL'),
-    "value.converter.basic.auth.credentials.source": os.getenv('VALUE_CONVERTER_BASIC_AUTH_CREDENTIALS_SOURCE'),
-    "value.converter.basic.auth.user.info": os.getenv('BASIC_AUTH_USER_CREDENTIALS')
-}
 
 
 
@@ -32,16 +24,33 @@ def _load_connector(file_to_load=""):
 
     with open(file_to_load) as f:
         data = json.load(f)
-        if os.getenv('build_target') == 'production':
-            data.update(REMOTE_CONNECTOR_SETTINGS_MAPPINGS)
+        data.update(_get_schema_registry_settings())
     response = requests.post(
-        CONNECT_SERVER,
+        settings.KAFKA_CONNECT_URL,
         headers=headers,
         data=json.dumps(data)
     )
     assert response.status_code == 201
 
     print (f"KAFKA_CONNECT: CONNECTOR {data['name']} LOADED")
+
+
+def _get_schema_registry_settings():
+    result = {
+        'value.converter.schema.registry.url': settings.SCHEMA_REGISTRY_URL,
+    }
+
+    parsed = urlparse(settings.SCHEMA_REGISTRY_URL)
+    if parsed.username and parsed.password:
+        creds = '{}:{}'.format(parsed.username, parsed.password)
+        result.update({
+            'key.converter.basic.auth.credentials.source': 'USER_INFO',
+            'value.converter.basic.auth.credentials.source': 'USER_INFO',
+            'key.converter.schema.registry.basic.auth.user.info': creds,
+            'value.converter.basic.auth.user.info': creds,
+        })
+
+    return result
 
 
 def load_kafka_connectors():

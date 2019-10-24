@@ -6,7 +6,7 @@ from . import settings
 
 consumer = AvroConsumer({
     'bootstrap.servers': settings.KAFKA_SERVER,
-    'schema.registry.url': settings.SCHEMA_REGISTRY_SERVER,
+    'schema.registry.url': settings.SCHEMA_REGISTRY_URL,
     'group.id': 'groupid'
 })
 consumer.subscribe([settings.ALERT_TOPIC])

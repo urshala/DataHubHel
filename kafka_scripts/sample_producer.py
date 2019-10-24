@@ -58,7 +58,7 @@ def produce_sample_data():
     producer = AvroProducer(
         {
             'bootstrap.servers': settings.KAFKA_SERVER,
-            'schema.registry.url': settings.SCHEMA_REGISTRY_SERVER
+            'schema.registry.url': settings.SCHEMA_REGISTRY_URL,
         },
         default_value_schema=value_schema,
         default_key_schema=key_schema
