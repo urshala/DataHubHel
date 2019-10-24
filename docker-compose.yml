@@ -159,15 +159,15 @@ services:
     depends_on:
       - elasticsearch
 
-  kafka-poc:
+  kafka-exp:
     build:
-      context: ./kafka_scripts
+      context: ./kafka-experiments
     volumes:
-      - ./kafka_scripts:/app/kafka_scripts
+      - ./kafka-experiments:/app
     environment:
       build_target: ${BUILD_TARGET:-development}
     env_file:
-      - ./kafka_scripts/env.${BUILD_TARGET:-development}
+      - ./kafka-experiments/env.${BUILD_TARGET:-development}
     command: bash -c "python /app/kafka_scripts/load_kafka_connectors.py"
 
 volumes:
