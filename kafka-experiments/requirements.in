@@ -1,3 +1,1 @@
-confluent-kafka[avro]
-environs
-requests
+-e .
