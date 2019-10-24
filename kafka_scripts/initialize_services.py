@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
-from kafka_scripts import (
-    create_ksql_streams,
-    load_kafka_connectors,
-    map_lat_lng_to_geopoints
-)
+from .elastic_search_geopoint_template import map_lat_lng_to_geopoints
+from .ksql_scripts import create_ksql_streams
+from .load_kafka_connectors import load_kafka_connectors
 
 
 def main():
     map_lat_lng_to_geopoints()
     create_ksql_streams()
     load_kafka_connectors()
-
 
 
 if __name__ == '__main__':
