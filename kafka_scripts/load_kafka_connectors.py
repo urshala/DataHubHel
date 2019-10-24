@@ -6,23 +6,22 @@ from urllib.parse import urlparse
 from . import settings
 
 SINK_CONFIGURATION_FILES = [
-    './kafka_scripts/postgres_sink.json',
-    './kafka_scripts/min_sink.json',
-    './kafka_scripts/elastic_sink.json',
-    './kafka_scripts/elastic_sink_location.json',
+    'postgres_sink.json',
+    'min_sink.json',
+    'elastic_sink.json',
+    'elastic_sink_location.json',
 ]
 
+CONF_FILE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
-
-def _load_connector(file_to_load=""):
-    assert file_to_load
+def _load_connector(file_to_load):
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
     }
 
-    with open(file_to_load) as f:
+    with open(os.path.join(CONF_FILE_DIR, file_to_load)) as f:
         data = json.load(f)
         data.update(_get_schema_registry_settings())
     response = requests.post(
