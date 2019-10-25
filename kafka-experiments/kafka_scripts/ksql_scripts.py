@@ -1,11 +1,16 @@
 import logging
+import os
 
 import requests
+from confluent_kafka import avro
 
 from . import settings
 from .http_response_check import check_errors
+from .kafka_utils import create_topic, register_schema
 
 LOG = logging.getLogger(__name__)
+
+data_dir = os.path.abspath(os.path.dirname(__file__))
 
 headers = {
     'Accept': 'application/vnd.ksql.v1+json',
@@ -14,12 +19,32 @@ headers = {
 
 
 def create_ksql_streams():
+    _create_noise_topic()
     _create_noise_stream()
     _create_sensor_name_keyed_stream()
     _create_loud_noise_stream()
     _create_min_value_table()
     _create_open311_topic()
     _create_location_based_steam()
+
+
+def _create_noise_topic():
+    if _has_topic(settings.KAFKA_TOPIC):
+        return
+
+    create_topic(settings.KAFKA_TOPIC)
+    LOG.info("Created Kafka topic: %s", settings.KAFKA_TOPIC)
+
+    key_schema = _get_schema("schema_key.avsc")
+    value_schema = _get_schema("schema_nested_value.avsc")
+    register_schema(settings.KAFKA_TOPIC, "key", key_schema)
+    LOG.info("Created schema for %s-key", settings.KAFKA_TOPIC)
+    register_schema(settings.KAFKA_TOPIC, "value", value_schema)
+    LOG.info("Created schema for %s-value", settings.KAFKA_TOPIC)
+
+
+def _get_schema(filename):
+    return avro.load(os.path.join(data_dir, filename))
 
 
 def _create_noise_stream():
@@ -128,6 +153,10 @@ def _has_table(name):
     return _has_object('table', name)
 
 
+def _has_topic(name):
+    return _has_object('topic', name)
+
+
 def _has_object(kind, name):
     if name in _get_names(kind):
         LOG.info(f'{kind.title()} already exists: %s', name)
@@ -137,7 +166,7 @@ def _has_object(kind, name):
 
 
 def _get_names(kind):
-    assert kind in ['stream', 'table']
+    assert kind in ['stream', 'table', 'topic']
     response = _execute_ksql_commands(f'SHOW {kind.upper()}S;')
     data = response.json()
     return [x['name'] for x in data[0][kind + 's']]
