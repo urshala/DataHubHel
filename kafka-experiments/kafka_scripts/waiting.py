@@ -19,7 +19,7 @@ def wait_for_services(timeout: timedelta = timedelta(seconds=120)) -> None:
 async def _wait_for_services(timeout: timedelta) -> None:
     secs = timeout.total_seconds()
     wait_all = asyncio.gather(
-        wait_for_kafka(settings.KAFKA_SERVER),
+        wait_for_kafka(settings.KAFKA_SERVERS),
         wait_for_schema_registry(settings.SCHEMA_REGISTRY_URL),
         wait_for_ksql(settings.KSQL_URL),
         wait_for_kafka_connect(settings.KAFKA_CONNECT_URL),

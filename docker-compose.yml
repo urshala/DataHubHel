@@ -170,7 +170,7 @@ services:
       - kafka-sink-db
       - elasticsearch
     environment:
-      KAFKA_SERVER: kafka:9092
+      KAFKA_SERVERS: kafka:9092
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
       KSQL_URL: http://ksql-server:8088
       KAFKA_CONNECT_URL: http://kafka-connector:8083

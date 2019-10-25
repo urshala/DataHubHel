@@ -60,11 +60,11 @@ def produce_sample_data():
     value_schema = avro.load(data_path('schema_nested_value.avsc'))
     key_schema = avro.load(data_path('schema_key.avsc'))
 
-    LOG.info("Producing to Kafka server: %s", settings.KAFKA_SERVER)
+    LOG.info("Producing to Kafka cluster: %s", settings.KAFKA_SERVERS)
 
     producer = AvroProducer(
         {
-            'bootstrap.servers': settings.KAFKA_SERVER,
+            'bootstrap.servers': settings.KAFKA_SERVERS,
             'schema.registry.url': settings.SCHEMA_REGISTRY_URL,
         },
         default_value_schema=value_schema,

@@ -13,7 +13,7 @@ def create_topic(
         partitions: int = 5,
         replication_factor: int = -1,
 ) -> None:
-    config = {"bootstrap.servers": settings.KAFKA_SERVER}
+    config = {"bootstrap.servers": settings.KAFKA_SERVERS}
     client = confluent_kafka.admin.AdminClient(config)
     if replication_factor == -1:
         cluster_metadata = client.list_topics()

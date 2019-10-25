@@ -10,7 +10,7 @@ LOG = logging.getLogger(__name__)
 
 def listen_open311():
     consumer = AvroConsumer({
-        'bootstrap.servers': settings.KAFKA_SERVER,
+        'bootstrap.servers': settings.KAFKA_SERVERS,
         'schema.registry.url': settings.SCHEMA_REGISTRY_URL,
         'group.id': 'groupid'
     })
