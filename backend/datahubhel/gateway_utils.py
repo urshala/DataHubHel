@@ -94,6 +94,6 @@ def get_kafka_producer() -> confluent_kafka.avro.AvroProducer:
     }))
 
     return confluent_kafka.avro.AvroProducer({
-        'bootstrap.servers': 'localhost:29092',
-        'schema.registry.url': 'http://localhost:8081'
+        'bootstrap.servers': settings.KAFKA_SERVERS,
+        'schema.registry.url': settings.SCHEMA_REGISTRY_URL,
     }, default_key_schema=key_schema, default_value_schema=value_schema)
