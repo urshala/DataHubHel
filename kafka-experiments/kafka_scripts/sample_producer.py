@@ -1,10 +1,14 @@
+import logging
 import os
 import random
 import time
+
 from confluent_kafka import avro
 from confluent_kafka.avro import AvroProducer
 
 from . import settings
+
+LOG = logging.getLogger(__name__)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -55,6 +59,9 @@ sample_data = {
 def produce_sample_data():
     value_schema = avro.load(data_path('schema_nested_value.avsc'))
     key_schema = avro.load(data_path('schema_key.avsc'))
+
+    LOG.info("Producing to Kafka server: %s", settings.KAFKA_SERVER)
+
     producer = AvroProducer(
         {
             'bootstrap.servers': settings.KAFKA_SERVER,
@@ -67,18 +74,22 @@ def produce_sample_data():
         sensor_name = f'Sensor {random.choice(VALID_NAMES)}'
         overload = random.choice((True, False))
         sample_data['thing'] = random.choice(THINGS)
-        sample_data['results']['level'] = float('{:.2f}'.format(random.uniform(1.0, 9.0)))
+        sample_data['results']['level'] = float(
+            '{:.2f}'.format(random.uniform(1.0, 9.0)))
         sample_data['results']['overload'] = overload
-        sample_data['results']['battery'] = float('{:.2f}'.format(random.uniform(1.0, 9.0)))
+        sample_data['results']['battery'] = float(
+            '{:.2f}'.format(random.uniform(1.0, 9.0)))
         sample_data['sensor']['sensor_name'] = sensor_name
-
 
         producer.produce(
             topic=settings.KAFKA_TOPIC,
             value=sample_data,
             key={'sensor_name': sensor_name}
         )
+        LOG.info("Produced noise data to topic %r with level %s",
+                 settings.KAFKA_TOPIC, sample_data["results"]["level"])
         time.sleep(2)
+
 
 if __name__ == "__main__":
     produce_sample_data()
