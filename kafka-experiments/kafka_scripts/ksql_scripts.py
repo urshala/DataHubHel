@@ -1,12 +1,39 @@
+import logging
+
 import requests
 
 from . import settings
 from .http_response_check import check_errors
 
+LOG = logging.getLogger(__name__)
+
 headers = {
     'Accept': 'application/vnd.ksql.v1+json',
     'Content-Type': 'application/vnd.ksql.v1+json'
 }
+
+
+def _has_stream(name):
+    return _has_object('stream', name)
+
+
+def _has_table(name):
+    return _has_object('table', name)
+
+
+def _has_object(kind, name):
+    if name in _get_names(kind):
+        LOG.info(f'{kind.title()} already exists: %s', name)
+        return True
+    else:
+        return False
+
+
+def _get_names(kind):
+    assert kind in ['stream', 'table']
+    response = _execute_ksql_commands(f'SHOW {kind.upper()}S;')
+    data = response.json()
+    return [x['name'] for x in data[0][kind + 's']]
 
 
 def _execute_ksql_commands(command):
@@ -29,6 +56,9 @@ def _create_noise_stream():
     Create the base stream from the noise topic.This
     is the base of all other topics/streams/table
     """
+    if _has_stream(settings.NOISE_STREAM):
+        return
+
     command = (
         f"CREATE STREAM {settings.NOISE_STREAM}"
         f" WITH (kafka_topic='{settings.KAFKA_TOPIC}',"
@@ -42,6 +72,9 @@ def _create_location_based_steam():
     """
     Create the stream with location for elasticsearch
     """
+    if _has_stream('ELASTIC_LOCATION_STREAM'):
+        return
+
     command = (
         f"CREATE STREAM ELASTIC_LOCATION_STREAM"
         f" AS SELECT SENSOR->SENSOR_NAME AS SENSOR_NAME,"
@@ -59,6 +92,9 @@ def _create_sensor_name_keyed_stream():
     Create the stream with key (sensor_name). The key part is required
     if we want to save the message to database.
     """
+    if _has_stream(settings.NOISE_STREAM_KEYED):
+        return
+
     command = (
         f"CREATE STREAM {settings.NOISE_STREAM_KEYED}"
         f" AS SELECT * FROM {settings.NOISE_STREAM}"
@@ -83,6 +119,9 @@ def _create_sensor_name_keyed_stream():
 
 
 def _create_min_value_table():
+    if _has_table(settings.MIN_VALUE_TABLE):
+        return
+
     _check_stream_create_status(settings.NOISE_STREAM_KEYED)
     command = (
         f"CREATE TABLE {settings.MIN_VALUE_TABLE} AS"
@@ -95,6 +134,9 @@ def _create_min_value_table():
 
 
 def _create_OPEN311_topic():
+    if _has_stream(settings.ALERT_TOPIC):
+        return
+
     _check_stream_create_status(settings.NOISE_STREAM)
     command = (
         f"CREATE STREAM {settings.ALERT_TOPIC} AS"
@@ -109,6 +151,9 @@ def _create_OPEN311_topic():
 
 
 def _create_loud_noise_stream():
+    if _has_stream(settings.LOUD_NOISE_TOPIC):
+        return
+
     _check_stream_create_status(settings.NOISE_STREAM)
     command = (
         f"CREATE STREAM {settings.LOUD_NOISE_TOPIC}"
