@@ -1,4 +1,5 @@
 import logging
+from typing import List
 from urllib.parse import urlparse
 
 import requests
@@ -65,8 +66,21 @@ SINK_CONFIGURATIONS = {
 
 
 def load_kafka_connectors():
+    existing_connectors = _get_existing_connectors()
     for configuration_name in SINK_CONFIGURATIONS:
+        if configuration_name in existing_connectors:
+            LOG.info("Connector already exists: %s", configuration_name)
+            continue
         _load_connector(configuration_name)
+
+
+def _get_existing_connectors() -> List[str]:
+    response = requests.get(settings.KAFKA_CONNECT_URL)
+    check_errors(response)
+    result = response.json()
+    assert isinstance(result, list)
+    assert all(isinstance(x, str) for x in result)
+    return result
 
 
 def _load_connector(configuration_name):
