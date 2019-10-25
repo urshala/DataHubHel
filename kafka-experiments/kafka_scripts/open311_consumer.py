@@ -7,15 +7,15 @@ from . import settings
 
 LOG = logging.getLogger(__name__)
 
-consumer = AvroConsumer({
-    'bootstrap.servers': settings.KAFKA_SERVER,
-    'schema.registry.url': settings.SCHEMA_REGISTRY_URL,
-    'group.id': 'groupid'
-})
-consumer.subscribe([settings.ALERT_TOPIC])
-
 
 def listen_open311():
+    consumer = AvroConsumer({
+        'bootstrap.servers': settings.KAFKA_SERVER,
+        'schema.registry.url': settings.SCHEMA_REGISTRY_URL,
+        'group.id': 'groupid'
+    })
+    consumer.subscribe([settings.ALERT_TOPIC])
+
     while True:
         try:
             msg = consumer.poll(10)
