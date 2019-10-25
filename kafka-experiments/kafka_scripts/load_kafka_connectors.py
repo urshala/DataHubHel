@@ -1,9 +1,12 @@
+import logging
 from urllib.parse import urlparse
 
 import requests
 
 from . import settings
 from .http_response_check import check_errors
+
+LOG = logging.getLogger(__name__)
 
 SINK_CONFIGURATIONS = {
     "noise-sink": {
@@ -82,8 +85,7 @@ def _load_connector(configuration_name):
         json=data,
     )
     check_errors(response)
-
-    print (f"KAFKA_CONNECT: CONNECTOR {data['name']} LOADED")
+    LOG.info("Loaded Kafka connector: %s", configuration_name)
 
 
 def _get_schema_registry_settings():

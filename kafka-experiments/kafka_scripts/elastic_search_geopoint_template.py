@@ -1,6 +1,10 @@
+import logging
+
 import requests
 
 from . import settings
+
+LOG = logging.getLogger(__name__)
 
 
 def map_lat_lng_to_geopoints():
@@ -35,4 +39,4 @@ def map_lat_lng_to_geopoints():
     data = dynamic_template_mapping
     response = requests.put(url, headers=headers, json=data)
     assert response.status_code == 200
-    print('ELASTICSEARCH:: GEO_POINT MAPPING CREATED')
+    LOG.info("Created geomapping to the ElasticSearch template")
