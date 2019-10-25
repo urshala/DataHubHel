@@ -1,5 +1,4 @@
 import requests
-import json
 
 from . import settings
 
@@ -9,19 +8,17 @@ headers = {
 }
 
 
-def _execute_ksql_commands(command=None):
-    assert command
-    response = requests.post(
-        settings.KSQL_URL,
-        headers=headers,
-        data=json.dumps({'ksql': command})
-    )
+def _execute_ksql_commands(command):
+    url = f'{settings.KSQL_URL}/ksql'
+    data = {'ksql': command}
+    response = requests.post(url, headers=headers, json=data)
     return response
 
 
 def _check_stream_create_status(stream=None):
     assert stream
-    response = requests.get(f'http://localhost:8088/status/stream/{stream}/create')
+    url = f'{settings.KSQL_URL}/status/stream/{stream}/create'
+    response = requests.get(url)
     assert response.json()['status'] == 'SUCCESS'
 
 
