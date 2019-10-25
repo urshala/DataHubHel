@@ -14,8 +14,7 @@ MIN_VALUE_TABLE = 'MIN_BATTERY'  # Table to store minimum battery reading
 KAFKA_SERVER = env.str('KAFKA_SERVER', 'localhost:29092')
 SCHEMA_REGISTRY_URL = env.str('SCHEMA_REGISTRY_URL', 'http://localhost:8081')
 KSQL_URL = env.str('KSQL_URL', 'http://localhost:8088')
-KAFKA_CONNECT_URL = env.str('KAFKA_CONNECT_URL',
-                            'http://localhost:8083/connectors')
+KAFKA_CONNECT_URL = env.str('KAFKA_CONNECT_URL', 'http://localhost:8083')
 
 SINK_DATABASE_URL = env.str('SINK_DATABASE_URL',
                             'postgresql://kafka-sink-db/noisedata')

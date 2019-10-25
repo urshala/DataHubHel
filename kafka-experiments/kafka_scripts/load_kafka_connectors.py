@@ -75,7 +75,7 @@ def load_kafka_connectors():
 
 
 def _get_existing_connectors() -> List[str]:
-    response = requests.get(settings.KAFKA_CONNECT_URL)
+    response = requests.get(f'{settings.KAFKA_CONNECT_URL}/connectors')
     check_errors(response)
     result = response.json()
     assert isinstance(result, list)
@@ -94,7 +94,7 @@ def _load_connector(configuration_name):
     }
     data['config'].update(_get_schema_registry_settings())
     response = requests.post(
-        settings.KAFKA_CONNECT_URL,
+        f'{settings.KAFKA_CONNECT_URL}/connectors',
         headers=headers,
         json=data,
     )
