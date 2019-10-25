@@ -1,6 +1,7 @@
 import requests
 
 from . import settings
+from .http_response_check import check_errors
 
 headers = {
     'Accept': 'application/vnd.ksql.v1+json',
@@ -12,6 +13,7 @@ def _execute_ksql_commands(command):
     url = f'{settings.KSQL_URL}/ksql'
     data = {'ksql': command}
     response = requests.post(url, headers=headers, json=data)
+    check_errors(response)
     return response
 
 
@@ -33,8 +35,6 @@ def _create_noise_stream():
         f" value_format='{settings.VALUE_FORMAT}');"
     )
     response = _execute_ksql_commands(command)
-    assert response.status_code == 200
-
     print(f'KAFKA/KSQL:: {settings.NOISE_STREAM} STREAM CREATED')
 
 
@@ -50,7 +50,6 @@ def _create_location_based_steam():
         f" PARTITION BY SENSOR_NAME;"
     )
     response = _execute_ksql_commands(command)
-    assert response.status_code == 200
 
     print(f"KAFKA/KSQL:: STREAM LOCATION BASED CREATED")
 
@@ -79,7 +78,6 @@ def _create_sensor_name_keyed_stream():
         f" PARTITION BY SENSOR_NAME;"
     )
     response = _execute_ksql_commands(command1)
-    assert response.status_code == 200
 
     print(f"KAFKA/KSQL:: STREAM {settings.NOISE_STREAM_KEYED} CREATED")
 
@@ -92,7 +90,6 @@ def _create_min_value_table():
         f" NOISE_STREAM_KEYED GROUP BY sensor_name;"
     )
     response = _execute_ksql_commands(command)
-    assert response.status_code == 200
 
     print(f"KAFKA/KSQL:: TABLE/TOPIC {settings.MIN_VALUE_TABLE} CREATED")
 
@@ -107,7 +104,6 @@ def _create_OPEN311_topic():
         f" RESULTS->LEVEL > 7.0 AND RESULTS->OVERLOAD = True;"
     )
     response = _execute_ksql_commands(command)
-    assert response.status_code == 200
 
     print (f'KAFKA/KSQL:: {settings.ALERT_TOPIC} CREATED')
 
@@ -127,7 +123,6 @@ def _create_loud_noise_stream():
         f" WHERE LEVEL > 4.0;"
     )
     response = _execute_ksql_commands(command1)
-    assert response.status_code == 200
 
     print (f'KAFKA/KSQL:: {settings.LOUD_NOISE_TOPIC} STREAM CREATED')
 

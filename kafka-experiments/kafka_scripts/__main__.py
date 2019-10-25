@@ -1,4 +1,5 @@
 import argparse
+import logging
 import sys
 
 from . import initialize_services, open311_consumer, sample_producer
@@ -12,6 +13,7 @@ COMMAND_MAP = {
 
 def main(argv=sys.argv):
     args = parse_args(argv)
+    logging.basicConfig(level=logging.INFO)
     func = COMMAND_MAP[args.command]
     func()
 

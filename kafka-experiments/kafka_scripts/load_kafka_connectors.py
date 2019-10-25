@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 import requests
 
 from . import settings
+from .http_response_check import check_errors
 
 SINK_CONFIGURATIONS = {
     "noise-sink": {
@@ -80,7 +81,7 @@ def _load_connector(configuration_name):
         headers=headers,
         json=data,
     )
-    assert response.status_code == 201
+    check_errors(response)
 
     print (f"KAFKA_CONNECT: CONNECTOR {data['name']} LOADED")
 
