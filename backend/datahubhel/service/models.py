@@ -7,7 +7,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 
-from datahubhel.dhh_auth.models import AbstractClientUser
+from datahubhel.auth.models import AbstractClientUser
 
 
 class Service(AbstractClientUser):

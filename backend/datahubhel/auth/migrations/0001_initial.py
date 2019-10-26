@@ -133,7 +133,7 @@ class Migration(migrations.Migration):
                 ('client', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='clientpermission',
-                    to='dhh_auth.Client')),
+                    to='datahubhel_auth.Client')),
                 ('content_type', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     to='contenttypes.ContentType')),
@@ -150,7 +150,7 @@ class Migration(migrations.Migration):
             name='client',
             field=models.OneToOneField(
                 on_delete=django.db.models.deletion.CASCADE,
-                to='dhh_auth.Client'),
+                to='datahubhel_auth.Client'),
         ),
         migrations.AddField(
             model_name='user',

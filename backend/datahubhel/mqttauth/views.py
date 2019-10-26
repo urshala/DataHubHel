@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 
+from datahubhel.auth.models import ClientPermission
 from datahubhel.core.models import Datastream
-from datahubhel.dhh_auth.models import ClientPermission
 from datahubhel.gatekeeper.utils import parse_sta_url
 from datahubhel.service.models import Service, ServiceToken
 

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('dhh_auth', '0001_initial'),
+        ('datahubhel_auth', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
                     verbose_name='active')),
                 ('client', models.OneToOneField(
                     on_delete=django.db.models.deletion.CASCADE,
-                    to='dhh_auth.Client')),
+                    to='datahubhel_auth.Client')),
                 ('maintainers', models.ManyToManyField(
                     to=settings.AUTH_USER_MODEL)),
             ],
