@@ -92,7 +92,7 @@ class Migration(migrations.Migration):
                 ('service', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='keys',
-                    to='service.Service')),
+                    to='datahubhel_service.Service')),
             ],
             options={
                 'ordering': ('-modified', '-created'),
