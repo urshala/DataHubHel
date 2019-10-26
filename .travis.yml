@@ -1,0 +1,46 @@
+branches: {only: [master, test, kafka]}
+
+sudo: false
+language: python
+cache: pip
+
+addons:
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+      - postgresql-10-postgis-2.4
+  postgresql: "10"
+
+before_script:
+  - psql -U postgres template1 -c "CREATE EXTENSION postgis"
+  - createdb datahubhel
+
+matrix:
+  include:
+    - name: Style
+      env: TOXENV=style
+      python: "3.7"
+      addons: null
+      before_script: null
+
+    - name: Requirements
+      env: TOXENV=requirements
+      python: "3.7"
+      addons: null
+      before_script: null
+
+    - name: Python 3.7
+      python: "3.7"
+      dist: xenial
+
+    - name: Python 3.6
+      python: "3.6"
+
+install: pip install tox==3.14.0 tox-travis==0.12
+
+script: cd backend && tox
+
+after_success:
+  - pip install codecov
+  - codecov -e TRAVIS_PYTHON_VERSION
