@@ -188,7 +188,7 @@ LOGGING = {
             'handlers': ['file', 'console'],
             'propagate': False,
         },
-        'mqttauth': {
+        'datahubhel.mqttauth': {
             'level': 'INFO',
             'handlers': ['file', 'console'],
             'propagate': False,
