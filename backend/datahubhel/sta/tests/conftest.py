@@ -3,8 +3,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-from .fixtures import *
-
 
 def token_authenticate(api_client, user):
     token, _ = Token.objects.get_or_create(user=user)

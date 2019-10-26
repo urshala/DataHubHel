@@ -10,6 +10,8 @@ from rest_framework.status import (
 
 from datahubhel.sta.models import Observation
 
+from .utils import create_observation, get_datastream
+
 
 def _check_observation_properties_key(observation):
     required_observation_keys = {
@@ -24,11 +26,9 @@ def _check_observation_properties_key(observation):
 
 
 @pytest.mark.django_db
-def test_observation_list_returns_all_observations(
-    observation_noise_level,
-    observation_battery,
-    api_staff_client
-):
+def test_observation_list_returns_all_observations(api_staff_client):
+    create_observation('noise_level')
+    create_observation('battery')
     url = reverse('sta:observation-list')
     response = api_staff_client.get(url)
     json_response = response.json()
@@ -40,11 +40,9 @@ def test_observation_list_returns_all_observations(
 
 
 @pytest.mark.django_db
-def test_observation_detail_view_returns_observation_detail(
-    observation_noise_level,
-    api_staff_client,
-    datastream_one
-):
+def test_observation_detail_view_returns_observation_detail(api_staff_client):
+    observation_noise_level = create_observation('noise_level')
+    datastream_one = observation_noise_level.datastream
     url = reverse(
         'sta:observation-detail',
         kwargs={'pk': observation_noise_level.id}
@@ -61,10 +59,8 @@ def test_observation_detail_view_returns_observation_detail(
 
 
 @pytest.mark.django_db
-def test_api_returns_404_status_for_non_existing_observation(
-    api_staff_client,
-    observation_noise_level
-):
+def test_api_returns_404_status_for_non_existing_observation(api_staff_client):
+    create_observation('noise_level')
     url = reverse(
         'sta:observation-detail',
         kwargs={'pk': -1}
@@ -77,10 +73,10 @@ def test_api_returns_404_status_for_non_existing_observation(
 
 @pytest.mark.django_db
 def test_endpoint_returns_all_observations_for_given_datastream(
-    observation_noise_level,
-    observation_battery,
-    api_staff_client
+        api_staff_client,
 ):
+    observation_noise_level = create_observation('noise_level')
+    observation_battery = create_observation('battery')
     datastream_id = observation_noise_level.datastream.id
     url = reverse(
         'sta:datastream-observation',
@@ -98,10 +94,8 @@ def test_endpoint_returns_all_observations_for_given_datastream(
 
 
 @pytest.mark.django_db
-def test_expanded_observation_returns_datastream_details(
-    observation_noise_level,
-    api_staff_client
-):
+def test_expanded_observation_returns_datastream_details(api_staff_client):
+    observation_noise_level = create_observation('noise_level')
     url = reverse(
         'sta:observation-detail',
         kwargs={'pk': observation_noise_level.id}
@@ -118,9 +112,9 @@ def test_expanded_observation_returns_datastream_details(
 
 @pytest.mark.django_db
 def test_user_cannot_create_observation_even_with_correct_data(
-    api_staff_client,
-    datastream_two
+        api_staff_client,
 ):
+    datastream_two = get_datastream(2)
     post_data = {
         'id': 'XYZ-XYZ-123',
         'time': str(datetime.datetime.now()),
@@ -140,9 +134,9 @@ def test_user_cannot_create_observation_even_with_correct_data(
 
 @pytest.mark.django_db
 def test_user_cannot_patch_observation_even_with_correct_data(
-    api_staff_client,
-    observation_noise_level
+        api_staff_client,
 ):
+    observation_noise_level = create_observation('noise_level')
     url = reverse(
         'sta:observation-detail',
         kwargs={'pk': observation_noise_level.id}
@@ -155,10 +149,8 @@ def test_user_cannot_patch_observation_even_with_correct_data(
 
 
 @pytest.mark.django_db
-def test_user_cannot_delete_observation(
-    api_staff_client,
-    observation_noise_level
-):
+def test_user_cannot_delete_observation(api_staff_client):
+    observation_noise_level = create_observation('noise_level')
     assert Observation.objects.count() == 1
     url = reverse(
         'sta:observation-detail',
@@ -171,10 +163,8 @@ def test_user_cannot_delete_observation(
 
 
 @pytest.mark.django_db
-def test_api_returns_selected_fields_only_for_observation(
-    api_staff_client,
-    observation_noise_level
-):
+def test_api_returns_selected_fields_only_for_observation(api_staff_client):
+    observation_noise_level = create_observation('noise_level')
     selected_fields = ['id', 'time']
     selected_fields_str = ','.join(selected_fields)
     url = reverse(
@@ -191,10 +181,8 @@ def test_api_returns_selected_fields_only_for_observation(
 
 
 @pytest.mark.django_db
-def test_user_cannot_post_observation_to_datastream(
-    api_staff_client,
-    datastream_two
-):
+def test_user_cannot_post_observation_to_datastream(api_staff_client):
+    datastream_two = get_datastream(2)
     data_to_post = {
         'id': 'ABC-123',
         'time': str(datetime.datetime.now()),
