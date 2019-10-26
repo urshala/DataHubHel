@@ -1,5 +1,9 @@
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import Permission, PermissionsMixin, UserManager
+from django.contrib.auth.models import (
+    Permission,
+    PermissionsMixin,
+    UserManager,
+)
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -9,8 +13,8 @@ from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from datahubhel.dhh_auth.utils import get_perm_obj
 from datahubhel.base_models import TimestampedUUIDModel
+from datahubhel.dhh_auth.utils import get_perm_obj
 
 
 class ClientPermission(TimestampedUUIDModel):

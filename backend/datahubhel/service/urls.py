@@ -1,6 +1,10 @@
 from rest_framework import routers
 
-from .views import ServicePermissionsViewSet, ServiceTokenViewSet, ServiceViewSet
+from .views import (
+    ServicePermissionsViewSet,
+    ServiceTokenViewSet,
+    ServiceViewSet,
+)
 
 router = routers.SimpleRouter()
 

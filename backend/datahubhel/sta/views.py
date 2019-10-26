@@ -2,9 +2,7 @@ from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
 
 from .models import Observation
-from .serializers import (
-    ObservationExpandedSerializer,
-    ObservationSerializer)
+from .serializers import ObservationExpandedSerializer, ObservationSerializer
 
 
 class ObservationViewSet(viewsets.ModelViewSet):

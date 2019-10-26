@@ -1,6 +1,9 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import exceptions
-from rest_framework.authentication import TokenAuthentication, get_authorization_header
+from rest_framework.authentication import (
+    TokenAuthentication,
+    get_authorization_header,
+)
 from rest_framework.authtoken.models import Token
 
 

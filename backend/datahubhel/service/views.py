@@ -7,7 +7,11 @@ from datahubhel.dhh_auth.models import ClientPermission
 from datahubhel.service.permissions import ServicePermissions
 
 from .models import Service, ServiceToken
-from .serializers import SerializerPermissionSerializer, ServiceKeySerializer, ServiceSerializer
+from .serializers import (
+    SerializerPermissionSerializer,
+    ServiceKeySerializer,
+    ServiceSerializer,
+)
 
 
 class ServiceViewSet(viewsets.ModelViewSet):

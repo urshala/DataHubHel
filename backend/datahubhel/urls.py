@@ -7,8 +7,8 @@ import datahubhel.dhh_auth.urls
 import datahubhel.gatekeeper.urls
 import datahubhel.mqttauth.urls
 import datahubhel.service.urls
-import ta120_adapter.urls
 import datahubhel.sta.urls
+import ta120_adapter.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),

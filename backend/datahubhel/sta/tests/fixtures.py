@@ -1,6 +1,6 @@
 import datetime
-import pytest
 
+import pytest
 from django.contrib.auth import get_user_model
 
 from datahubhel.core.models import Datastream, Thing

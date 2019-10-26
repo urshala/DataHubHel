@@ -12,11 +12,16 @@ from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from datahubhel.core.models import Datastream, Thing
 from datahubhel.dhh_auth.models import ClientPermission
 from datahubhel.dhh_auth.utils import get_perm_obj
 
-from datahubhel.core.models import Datastream, Thing
-from .utils import ENTITY_TO_DATASTREAM_PATH, get_gatekeeper_sta_prefix, get_url_entity_type, parse_sta_url
+from .utils import (
+    ENTITY_TO_DATASTREAM_PATH,
+    get_gatekeeper_sta_prefix,
+    get_url_entity_type,
+    parse_sta_url,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -1,11 +1,12 @@
 import datetime
-import pytest
 
+import pytest
 from django.urls import reverse
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_404_NOT_FOUND,
-    HTTP_405_METHOD_NOT_ALLOWED)
+    HTTP_405_METHOD_NOT_ALLOWED,
+)
 
 from datahubhel.sta.models import Observation
 
