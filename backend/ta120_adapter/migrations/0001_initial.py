@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('core', '0002_sensor'),
+        ('datahubhel', '0002_sensor'),
     ]
 
     operations = [
@@ -28,13 +28,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TA120Sensor',
             fields=[
-                ('sensor_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='core.Sensor')),
+                ('sensor_ptr', models.OneToOneField(
+                    auto_created=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    parent_link=True,
+                    primary_key=True,
+                    serialize=False,
+                    to='datahubhel.Sensor')),
                 ('key', models.CharField(max_length=128)),
             ],
             options={
                 'abstract': False,
             },
-            bases=('core.sensor',),
+            bases=('datahubhel.sensor',),
         ),
         migrations.CreateModel(
             name='Thing',

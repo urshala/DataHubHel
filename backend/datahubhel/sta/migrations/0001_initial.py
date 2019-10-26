@@ -22,7 +22,10 @@ class Migration(migrations.Migration):
                 ('sensor_id', models.CharField(max_length=50, verbose_name='sensor_id')),
                 ('property_name', models.CharField(max_length=50, verbose_name='property_name')),
                 ('property_value', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('datastream', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='observations', to='gatekeeper.Datastream')),
+                ('datastream', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    related_name='observations',
+                    to='datahubhel.Datastream')),
             ],
         ),
     ]

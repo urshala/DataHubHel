@@ -9,7 +9,7 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0001_initial'),
+        ('datahubhel', '0001_initial'),
     ]
 
     operations = [
@@ -23,7 +23,9 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=60)),
                 ('sensor_type', models.CharField(max_length=60)),
                 ('description', models.TextField(blank=True)),
-                ('thing', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.Thing')),
+                ('thing', models.ForeignKey(
+                    to='datahubhel.Thing',
+                    on_delete=django.db.models.deletion.PROTECT)),
             ],
             options={
                 'abstract': False,

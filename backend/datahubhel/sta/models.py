@@ -2,7 +2,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from gatekeeper.models import Datastream
+from datahubhel.core.models import Datastream
 
 
 class Observation(models.Model):

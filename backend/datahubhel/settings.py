@@ -79,14 +79,13 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'django_extensions',
-    'datahubhel',
+    'datahubhel.core',
+    'datahubhel.dhh_auth',
     'datahubhel.gatekeeper',
     'datahubhel.mqttauth',
     'datahubhel.service',
-    'datahubhel.dhh_auth',
-    'ta120_adapter',
-    'datahubhel.core',
     'datahubhel.sta',
+    'ta120_adapter',
 ]
 
 MIDDLEWARE = [

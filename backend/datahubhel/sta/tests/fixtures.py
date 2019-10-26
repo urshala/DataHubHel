@@ -3,7 +3,7 @@ import pytest
 
 from django.contrib.auth import get_user_model
 
-from gatekeeper.models import Datastream, EntityBase, Thing
+from datahubhel.core.models import Datastream, Thing
 from datahubhel.sta.models import Observation
 
 

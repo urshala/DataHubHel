@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class CoreConfig(AppConfig):
+class DataHubHelCoreConfig(AppConfig):
     name = 'datahubhel.core'
+    label = 'datahubhel'

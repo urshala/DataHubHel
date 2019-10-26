@@ -47,6 +47,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='datastream',
             name='thing',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Thing'),
+            field=models.ForeignKey(
+                to='datahubhel.Thing',
+                on_delete=django.db.models.deletion.CASCADE),
         ),
     ]

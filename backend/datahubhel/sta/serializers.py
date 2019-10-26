@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
+from datahubhel.core.models import Datastream, Thing
+
 from .models import Observation
-from gatekeeper.models import Thing, Datastream
 
 
 class ObservationSerializer(serializers.ModelSerializer):
