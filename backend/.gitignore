@@ -4,3 +4,4 @@
 /.tox
 /.eggs
 /requirements-local.*
+.coverage
