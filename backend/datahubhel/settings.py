@@ -183,7 +183,7 @@ LOGGING = {
             'level': 'WARNING',
             'handlers': ['console'],
         },
-        'gatekeeper': {
+        'datahubhel.gatekeeper': {
             'level': 'INFO',
             'handlers': ['file', 'console'],
             'propagate': False,

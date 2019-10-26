@@ -48,7 +48,8 @@ class Gatekeeper(APIView):
         path = self.kwargs.pop('path')
 
         self.sts_self_base_url = request.build_absolute_uri(
-            reverse('gatekeeper:index', kwargs={'path': ''})).rstrip('/')
+            reverse('datahubhel.gatekeeper:index',
+                    kwargs={'path': ''})).rstrip('/')
 
         # TODO: validate path
         self.sts_url = '{}/{}'.format(settings.GATEKEEPER_STS_BASE_URL, path)

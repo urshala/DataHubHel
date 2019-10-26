@@ -79,6 +79,6 @@ class Migration(migrations.Migration):
             name='thing',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                to='gatekeeper.Thing'),
+                to='datahubhel_gatekeeper.Thing'),
         ),
     ]
