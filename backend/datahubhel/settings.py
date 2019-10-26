@@ -84,11 +84,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'django_extensions',
-    'datahubhel',
-    'gatekeeper',
-    'mqttauth',
-    'service',
-    'dhh_auth',
+    'datahubhel.core',
+    'datahubhel.dhh_auth',
+    'datahubhel.gatekeeper',
+    'datahubhel.mqttauth',
+    'datahubhel.service',
+    'datahubhel.sta',
     'ta120_adapter',
 ]
 
@@ -146,8 +147,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'helusers.oidc.ApiTokenAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'dhh_auth.authentication.UserTokenAuthentication',
-        'service.authentication.ServiceTokenAuthentication',
+        'datahubhel.dhh_auth.authentication.UserTokenAuthentication',
+        'datahubhel.service.authentication.ServiceTokenAuthentication',
     ] + ([
         'rest_framework.authentication.SessionAuthentication',
     ] if DEBUG else []),
