@@ -7,7 +7,11 @@ from datahubhel.dhh_auth.models import ClientPermission
 from datahubhel.service.permissions import ServicePermissions
 
 from .models import Service, ServiceToken
-from .serializers import SerializerPermissionSerializer, ServiceKeySerializer, ServiceSerializer
+from .serializers import (
+    SerializerPermissionSerializer,
+    ServiceKeySerializer,
+    ServiceSerializer,
+)
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
@@ -34,7 +38,8 @@ class ServicePermissionsViewSet(mixins.CreateModelMixin,
                                 mixins.DestroyModelMixin,
                                 mixins.ListModelMixin,
                                 GenericViewSet):
-    queryset = ClientPermission.objects.filter(client__service__in=Service.objects.all())
+    queryset = ClientPermission.objects.filter(
+        client__service__in=Service.objects.all())
     serializer_class = SerializerPermissionSerializer
 
     def get_queryset(self):

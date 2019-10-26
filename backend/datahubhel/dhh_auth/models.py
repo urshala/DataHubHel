@@ -1,5 +1,9 @@
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import Permission, PermissionsMixin, UserManager
+from django.contrib.auth.models import (
+    Permission,
+    PermissionsMixin,
+    UserManager,
+)
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -9,13 +13,14 @@ from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from datahubhel.dhh_auth.utils import get_perm_obj
 from datahubhel.base_models import TimestampedUUIDModel
+from datahubhel.dhh_auth.utils import get_perm_obj
 
 
 class ClientPermission(TimestampedUUIDModel):
     permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
-    client = models.ForeignKey('Client', related_name='clientpermission', on_delete=models.CASCADE)
+    client = models.ForeignKey('Client', related_name='clientpermission',
+                               on_delete=models.CASCADE)
     permitted_by = models.ForeignKey('User', on_delete=models.CASCADE)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -35,13 +40,12 @@ class Client(TimestampedUUIDModel):
 
         if not isinstance(objects, list):
             objects = [objects]
-        return (
-            ClientPermission.objects
-                .filter(permission=permission,
-                        client=self,
-                        content_type=permission.content_type,
-                        object_pk__in=[getattr(obj, object_lookup_field) for obj in objects])
-        )
+
+        return ClientPermission.objects.filter(
+            permission=permission,
+            client=self,
+            content_type=permission.content_type,
+            object_pk__in=[getattr(x, object_lookup_field) for x in objects])
 
     def has_obj_perm(self, perm, obj, object_lookup_field='sts_id'):
         permission = get_perm_obj(perm, obj)
@@ -53,7 +57,8 @@ class Client(TimestampedUUIDModel):
 
     def has_any_obj_perm(self, perm, objects, object_lookup_field='sts_id'):
         permission = get_perm_obj(perm, objects[0])
-        obj_permissions = self._get_perms(permission, objects, object_lookup_field)
+        obj_permissions = self._get_perms(
+            permission, objects, object_lookup_field)
 
         if not obj_permissions:
             return False
@@ -61,7 +66,8 @@ class Client(TimestampedUUIDModel):
 
     def has_all_obj_perm(self, perm, objects, object_lookup_field='sts_id'):
         permission = get_perm_obj(perm, objects[0])
-        obj_permissions = self._get_perms(permission, objects, object_lookup_field)
+        obj_permissions = self._get_perms(
+            permission, objects, object_lookup_field)
 
         if not obj_permissions or len(obj_permissions) != len(objects):
             return False
@@ -96,10 +102,10 @@ class AbstractClientUser(AbstractBaseUser, TimestampedUUIDModel):
         super().save(*args, **kwargs)
 
     def get_full_name(self):
-        raise NotImplementedError('subclasses of AbstractClientUser must provide a get_full_name() method')
+        raise NotImplementedError
 
     def get_short_name(self):
-        raise NotImplementedError('subclasses of AbstractClientUser must provide a get_short_name() method.')
+        raise NotImplementedError
 
     class Meta:
         abstract = True
@@ -112,7 +118,9 @@ class User(AbstractClientUser, PermissionsMixin):
         _('username'),
         max_length=150,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_(
+            'Required. 150 characters or fewer. '
+            'Letters, digits and @/./+/-/_ only.'),
         validators=[username_validator],
         error_messages={
             'unique': _("A user with that username already exists."),
@@ -124,7 +132,8 @@ class User(AbstractClientUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
-        help_text=_('Designates whether the user can log into this admin site.'),
+        help_text=_(
+            'Designates whether the user can log into this admin site.'),
     )
     is_active = models.BooleanField(
         _('active'),

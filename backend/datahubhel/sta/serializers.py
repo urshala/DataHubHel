@@ -11,7 +11,6 @@ class ObservationSerializer(serializers.ModelSerializer):
         model = Observation
         fields = '__all__'
 
-
     def __init__(self, *args, **kwargs):
         """
         If there is select query params in the request. Select
@@ -35,7 +34,6 @@ class ObservationSerializer(serializers.ModelSerializer):
 
 class ThingSerializer(serializers.ModelSerializer):
 
-
     class Meta:
         model = Thing
         fields = '__all__'
@@ -43,7 +41,6 @@ class ThingSerializer(serializers.ModelSerializer):
 
 class DatastreamSerializer(serializers.ModelSerializer):
     thing = ThingSerializer()
-
 
     class Meta:
         model = Datastream
@@ -57,7 +54,6 @@ class ObservationExpandedSerializer(ObservationSerializer):
     as integer, it expands the fields of the datastream.
     """
     datastream = DatastreamSerializer()
-
 
     class Meta:
         model = Observation

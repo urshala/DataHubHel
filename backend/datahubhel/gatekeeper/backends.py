@@ -10,7 +10,8 @@ class TokenBackend(ModelBackend):
             return
 
         try:
-            user = UserModel._default_manager.get(auth_token=request.GET.get('token'))
+            user = UserModel._default_manager.get(
+                auth_token=request.GET.get('token'))
         except UserModel.DoesNotExist:
             return
 

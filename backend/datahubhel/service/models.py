@@ -20,7 +20,9 @@ class Service(AbstractClientUser):
         _('identifier'),
         max_length=150,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_(
+            'Required. 150 characters or fewer.'
+            ' Letters, digits and @/./+/-/_ only.'),
         validators=[identifier_validator],
         error_messages={
             'unique': _("A user with that username already exists."),
@@ -65,7 +67,8 @@ class Service(AbstractClientUser):
 
 
 class ServiceToken(TimeStampedModel):
-    service = models.ForeignKey(Service, related_name='keys', on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, related_name='keys',
+                                on_delete=models.CASCADE)
     key = models.CharField(max_length=255)
 
     def save(self, **kwargs):

@@ -6,7 +6,11 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.response import Response
 
-from datahubhel.gateway_utils import generate_ids, get_kafka_producer, make_ms_timestamp
+from datahubhel.gateway_utils import (
+    generate_ids,
+    get_kafka_producer,
+    make_ms_timestamp,
+)
 
 from .authentication import SensorKeyAuthentication
 from .models import Sensor
