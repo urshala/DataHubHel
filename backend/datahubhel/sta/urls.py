@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import DatastreamObservationView, ObservationViewSet
 
-app_name = 'sta'
+app_name = 'datahubhel.sta'
 router = DefaultRouter(trailing_slash=False)
 
 router.register('observations', ObservationViewSet, basename='observation')

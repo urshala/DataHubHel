@@ -1,1 +1,1 @@
-default_app_config = 'datahubhel.sta.apps.STAConfig'
+default_app_config = 'datahubhel.sta.apps.DataHubHelStaConfig'

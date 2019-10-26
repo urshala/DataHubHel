@@ -29,7 +29,7 @@ def _check_observation_properties_key(observation):
 def test_observation_list_returns_all_observations(api_staff_client):
     create_observation('noise_level')
     create_observation('battery')
-    url = reverse('sta:observation-list')
+    url = reverse('datahubhel.sta:observation-list')
     response = api_staff_client.get(url)
     json_response = response.json()
 
@@ -44,7 +44,7 @@ def test_observation_detail_view_returns_observation_detail(api_staff_client):
     observation_noise_level = create_observation('noise_level')
     datastream_one = observation_noise_level.datastream
     url = reverse(
-        'sta:observation-detail',
+        'datahubhel.sta:observation-detail',
         kwargs={'pk': observation_noise_level.id}
     )
     response = api_staff_client.get(url)
@@ -62,7 +62,7 @@ def test_observation_detail_view_returns_observation_detail(api_staff_client):
 def test_api_returns_404_status_for_non_existing_observation(api_staff_client):
     create_observation('noise_level')
     url = reverse(
-        'sta:observation-detail',
+        'datahubhel.sta:observation-detail',
         kwargs={'pk': -1}
     )
     response = api_staff_client.get(url)
@@ -79,7 +79,7 @@ def test_endpoint_returns_all_observations_for_given_datastream(
     observation_battery = create_observation('battery')
     datastream_id = observation_noise_level.datastream.id
     url = reverse(
-        'sta:datastream-observation',
+        'datahubhel.sta:datastream-observation',
         kwargs={'datastream_id': datastream_id}
     )
     response = api_staff_client.get(url)
@@ -97,7 +97,7 @@ def test_endpoint_returns_all_observations_for_given_datastream(
 def test_expanded_observation_returns_datastream_details(api_staff_client):
     observation_noise_level = create_observation('noise_level')
     url = reverse(
-        'sta:observation-detail',
+        'datahubhel.sta:observation-detail',
         kwargs={'pk': observation_noise_level.id}
     )
     url = '?'.join((url, 'expand=Datastream'))
@@ -125,7 +125,7 @@ def test_user_cannot_create_observation_even_with_correct_data(
         'property_name': 'distance_travelled',
         'datastream': datastream_two.pk
     }
-    url = reverse('sta:observation-list')
+    url = reverse('datahubhel.sta:observation-list')
     response = api_staff_client.post(url, data=post_data, format='json')
 
     assert response.status_code == HTTP_405_METHOD_NOT_ALLOWED
@@ -138,7 +138,7 @@ def test_user_cannot_patch_observation_even_with_correct_data(
 ):
     observation_noise_level = create_observation('noise_level')
     url = reverse(
-        'sta:observation-detail',
+        'datahubhel.sta:observation-detail',
         kwargs={'pk': observation_noise_level.id}
     )
     new_data = {'property_name': 'new_property'}
@@ -153,7 +153,7 @@ def test_user_cannot_delete_observation(api_staff_client):
     observation_noise_level = create_observation('noise_level')
     assert Observation.objects.count() == 1
     url = reverse(
-        'sta:observation-detail',
+        'datahubhel.sta:observation-detail',
         kwargs={'pk': observation_noise_level.id}
     )
     response = api_staff_client.delete(url)
@@ -168,7 +168,7 @@ def test_api_returns_selected_fields_only_for_observation(api_staff_client):
     selected_fields = ['id', 'time']
     selected_fields_str = ','.join(selected_fields)
     url = reverse(
-        'sta:observation-detail',
+        'datahubhel.sta:observation-detail',
         kwargs={'pk': observation_noise_level.id}
     )
     url = f"{url}?select={selected_fields_str}"
@@ -194,7 +194,7 @@ def test_user_cannot_post_observation_to_datastream(api_staff_client):
     }
 
     url = reverse(
-        'sta:datastream-observation',
+        'datahubhel.sta:datastream-observation',
         kwargs={'datastream_id': datastream_two.id}
     )
     response = api_staff_client.post(url, data=data_to_post, format='json')
