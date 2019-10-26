@@ -14,4 +14,4 @@ urlpatterns = [
         DatastreamObservationView.as_view(),
         name='datastream-observation'
     )
-]+ router.urls
+] + router.urls

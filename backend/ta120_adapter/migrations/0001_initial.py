@@ -4,8 +4,11 @@ import uuid
 
 import django.contrib.gis.db.models.fields
 import django.db.models.deletion
-import django_extensions.db.fields
 from django.db import migrations, models
+from django_extensions.db.fields import (
+    CreationDateTimeField,
+    ModificationDateTimeField,
+)
 
 
 class Migration(migrations.Migration):
@@ -20,10 +23,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Location',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='address')),
+                ('id', models.AutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID')),
+                ('name', models.CharField(
+                    max_length=100, verbose_name='address')),
                 ('description', models.TextField(blank=True)),
-                ('location', django.contrib.gis.db.models.fields.PointField(blank=True, null=True, srid=4326, verbose_name='location')),
+                ('location', django.contrib.gis.db.models.fields.PointField(
+                    blank=True, null=True, srid=4326,
+                    verbose_name='location')),
             ],
         ),
         migrations.CreateModel(
@@ -46,9 +56,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Thing',
             fields=[
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('created', CreationDateTimeField(
+                    auto_now_add=True, verbose_name='created')),
+                ('modified', ModificationDateTimeField(
+                     auto_now=True, verbose_name='modified')),
+                ('id', models.UUIDField(
+                    default=uuid.uuid4,
+                    editable=False,
+                    primary_key=True,
+                    serialize=False)),
                 ('name', models.CharField(max_length=60)),
                 ('description', models.TextField(blank=True)),
             ],
@@ -59,11 +75,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ThingLocation',
             fields=[
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('location', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='thinglocations', to='ta120_adapter.Location')),
-                ('thing', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='thinglocations', to='ta120_adapter.Thing')),
+                ('created', CreationDateTimeField(
+                    auto_now_add=True, verbose_name='created')),
+                ('modified', ModificationDateTimeField(
+                    auto_now=True, verbose_name='modified')),
+                ('id', models.UUIDField(
+                    default=uuid.uuid4,
+                    editable=False,
+                    primary_key=True,
+                    serialize=False)),
+                ('location', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    related_name='thinglocations',
+                    to='ta120_adapter.Location')),
+                ('thing', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    related_name='thinglocations',
+                    to='ta120_adapter.Thing')),
             ],
             options={
                 'abstract': False,

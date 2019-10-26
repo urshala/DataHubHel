@@ -2,6 +2,7 @@
 
 import django.contrib.postgres.fields.jsonb
 import django.db.models.deletion
+from django.contrib.postgres.fields.jsonb import JSONField
 from django.db import migrations, models
 
 
@@ -17,11 +18,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Observation',
             fields=[
-                ('id', models.CharField(max_length=70, primary_key=True, serialize=False, verbose_name='id')),
+                ('id', models.CharField(
+                    max_length=70,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='id')),
                 ('time', models.DateTimeField(verbose_name='time')),
-                ('sensor_id', models.CharField(max_length=50, verbose_name='sensor_id')),
-                ('property_name', models.CharField(max_length=50, verbose_name='property_name')),
-                ('property_value', django.contrib.postgres.fields.jsonb.JSONField()),
+                ('sensor_id', models.CharField(
+                    max_length=50, verbose_name='sensor_id')),
+                ('property_name', models.CharField(
+                    max_length=50, verbose_name='property_name')),
+                ('property_value', JSONField()),
                 ('datastream', models.ForeignKey(
                     on_delete=django.db.models.deletion.PROTECT,
                     related_name='observations',

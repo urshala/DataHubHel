@@ -11,7 +11,8 @@ class Observation(models.Model):
     sensor_id = models.CharField(_("sensor_id"), max_length=50)
     property_name = models.CharField(_("property_name"), max_length=50)
     property_value = JSONField()
-    datastream = models.ForeignKey(Datastream, on_delete=models.PROTECT, related_name='observations')
+    datastream = models.ForeignKey(Datastream, on_delete=models.PROTECT,
+                                   related_name='observations')
 
     def __str__(self):
         return f'{self.property_name}-{self.sensor_id}'

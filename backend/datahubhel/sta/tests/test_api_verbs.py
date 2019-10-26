@@ -81,7 +81,7 @@ def test_endpoint_returns_all_observations_for_given_datastream(
     observation_battery,
     api_staff_client
 ):
-    datastream_id =  observation_noise_level.datastream.id
+    datastream_id = observation_noise_level.datastream.id
     url = reverse(
         'sta:datastream-observation',
         kwargs={'datastream_id': datastream_id}
@@ -112,7 +112,8 @@ def test_expanded_observation_returns_datastream_details(
 
     assert response.status_code == HTTP_200_OK
     assert type(json_response['datastream']) == dict
-    assert sorted(json_response['datastream'].keys()) == sorted(['id', 'thing', 'sts_id', 'name', 'description', 'owner'])
+    assert sorted(json_response['datastream'].keys()) == sorted(
+        ['id', 'thing', 'sts_id', 'name', 'description', 'owner'])
 
 
 @pytest.mark.django_db
@@ -186,7 +187,7 @@ def test_api_returns_selected_fields_only_for_observation(
 
     assert response.status_code == HTTP_200_OK
     assert set(json_response.keys()) == set(selected_fields)
-    assert not 'sensor_id' in json_response
+    assert 'sensor_id' not in json_response
 
 
 @pytest.mark.django_db

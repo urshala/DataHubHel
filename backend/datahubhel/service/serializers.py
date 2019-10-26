@@ -106,7 +106,8 @@ class SerializerPermissionSerializer(serializers.Serializer):
                 'entity_id': [_('No such entity')]
             })
 
-        return service.client.create_perm(validated_data['permission'], entity, user)
+        return service.client.create_perm(
+            validated_data['permission'], entity, user)
 
     def to_representation(self, instance):
         fields = self.fields
@@ -123,6 +124,7 @@ class SerializerPermissionSerializer(serializers.Serializer):
         ret['service'] = fields['service'].to_representation(service)
         ret['permission'] = fields['permission'].to_representation(permission)
         ret['entity_id'] = fields['entity_id'].to_representation(entity_id)
-        ret['entity_type'] = fields['entity_type'].to_representation(entity_type)
+        ret['entity_type'] = (
+            fields['entity_type'].to_representation(entity_type))
 
         return ret

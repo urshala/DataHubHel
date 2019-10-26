@@ -24,15 +24,19 @@ def auth(request):
     response_status_code = status.HTTP_403_FORBIDDEN
 
     try:
-        ServiceToken.objects.get(service__identifier=request.POST.get('username'), service__is_active=True,
-                                 key=request.POST.get('password'))
+        ServiceToken.objects.get(
+            service__identifier=request.POST.get('username'),
+            service__is_active=True,
+            key=request.POST.get('password'))
 
         response_status_code = status.HTTP_200_OK
     except ServiceToken.DoesNotExist:
         pass
 
     logger.info('MQTT authentication for service "{}" {}'.format(
-        request.POST.get('username'), 'succeeded' if response_status_code == status.HTTP_200_OK else 'failed'))
+        request.POST.get('username'),
+        'succeeded' if response_status_code == status.HTTP_200_OK else 'failed'
+    ))
 
     return HttpResponse(status=response_status_code)
 
@@ -54,8 +58,13 @@ def superuser(request):
 
     user_class = get_user_model()
     try:
-        service_identifiers = Service.objects.all().values_list('identifier', flat=True)
-        user = user_class.objects.exclude(username__in=service_identifiers).get(username=username, is_active=True)
+        service_identifiers = (
+            Service.objects.all()
+            .values_list('identifier', flat=True))
+        user = (
+            user_class.objects
+            .exclude(username__in=service_identifiers)
+            .get(username=username, is_active=True))
     except user_class.DoesNotExist:
         pass
 
@@ -63,7 +72,9 @@ def superuser(request):
         response_status_code = status.HTTP_200_OK
 
     logger.info('MQTT is super user check for user "{}": {}'.format(
-        username, 'True' if response_status_code == status.HTTP_200_OK else 'False'))
+        username,
+        'True' if response_status_code == status.HTTP_200_OK else 'False'
+    ))
 
     return HttpResponse(status=response_status_code)
 
@@ -89,11 +100,14 @@ def acl(request):
 
     permission_name = permission_name_map.get(acc)
     if not permission_name:
-        logger.info('MQTT ACL check encountered unknown value for acc: "{}"'.format(acc))
+        logger.info(
+            'MQTT ACL check encountered unknown value for acc: "{}"'
+            .format(acc))
         return HttpResponse(status=response_status_code)
 
-    log_text = 'MQTT ACL check for service "{}", topic "{}", perm "{}". Result: '.format(
-        username, topic, permission_name)
+    log_text = (
+        'MQTT ACL check for service "{}", topic "{}", perm "{}". Result: '
+        .format(username, topic, permission_name))
 
     try:
         service = Service.objects.get(identifier=username)
@@ -104,16 +118,21 @@ def acl(request):
     parse_result = parse_sta_url(topic, prefix=settings.STA_VERSION)
 
     if parse_result and parse_result['parts']:
-        # For now we only look for a Datastream id and check permissions for that datastream
+        # For now we only look for a Datastream id and check permissions
+        # for that datastream
         for part in parse_result['parts']:
-            if part['type'] == 'entity' and part['name'] == 'Datastream' and part['id']:
+            if part['type'] == 'entity' and (
+                    part['name'] == 'Datastream' and part['id']):
                 try:
                     ds = Datastream.objects.get(sts_id=part['id'])
                     if service.client.has_obj_perm(permission_name, ds, 'id'):
                         response_status_code = status.HTTP_200_OK
-                except (Datastream.DoesNotExist, ClientPermission.DoesNotExist):
+                except (Datastream.DoesNotExist,
+                        ClientPermission.DoesNotExist):
                     pass
 
-    logger.info(log_text + ('Access granted' if response_status_code == status.HTTP_200_OK else 'Access denied'))
+    logger.info(log_text + (
+        'Access granted' if response_status_code == status.HTTP_200_OK else
+        'Access denied'))
 
     return HttpResponse(status=response_status_code)

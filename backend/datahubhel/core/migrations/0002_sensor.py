@@ -3,8 +3,11 @@
 import uuid
 
 import django.db.models.deletion
-import django_extensions.db.fields
 from django.db import migrations, models
+from django_extensions.db.fields import (
+    CreationDateTimeField,
+    ModificationDateTimeField,
+)
 
 
 class Migration(migrations.Migration):
@@ -17,9 +20,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Sensor',
             fields=[
-                ('created', django_extensions.db.fields.CreationDateTimeField(auto_now_add=True, verbose_name='created')),
-                ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('created', CreationDateTimeField(
+                    auto_now_add=True, verbose_name='created')),
+                ('modified', ModificationDateTimeField(
+                    auto_now=True, verbose_name='modified')),
+                ('id', models.UUIDField(
+                    default=uuid.uuid4,
+                    editable=False,
+                    primary_key=True,
+                    serialize=False)),
                 ('sensor_id', models.CharField(max_length=60, unique=True)),
                 ('name', models.CharField(max_length=60)),
                 ('sensor_type', models.CharField(max_length=60)),

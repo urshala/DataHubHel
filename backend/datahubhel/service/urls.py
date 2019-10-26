@@ -8,8 +8,13 @@ from .views import (
 
 router = routers.SimpleRouter()
 
-router.register(r'services', ServiceViewSet)
-router.register(r'servicetokens', ServiceTokenViewSet, base_name='servicetoken')
-router.register(r'servicepermissions', ServicePermissionsViewSet, base_name='servicepermission')
+router.register(
+    r'services', ServiceViewSet)
+router.register(
+    r'servicetokens', ServiceTokenViewSet,
+    base_name='servicetoken')
+router.register(
+    r'servicepermissions', ServicePermissionsViewSet,
+    base_name='servicepermission')
 
 urlpatterns = router.urls

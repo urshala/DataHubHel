@@ -5,7 +5,8 @@ from django.conf import settings
 from django.urls import reverse
 
 ENTITY_NAMES = [
-    'Thing', 'Datastream', 'MultiDatastream', 'Sensor', 'Observation', 'ObservedProperty', 'FeatureOfInterest',
+    'Thing', 'Datastream', 'MultiDatastream', 'Sensor',
+    'Observation', 'ObservedProperty', 'FeatureOfInterest',
     'HistoricalLocation', 'Location'
 ]
 
@@ -35,18 +36,35 @@ ENTITY_TO_DATASTREAM_PATH = {
 
 
 def parse_sta_url(url, prefix=None):
-    """Parses a SensortThings API path and returns the type of the path and the entities and ids found
+    """
+    Parses a SensortThings API path.
 
-    examples:
-    >>> parse_sta_url('/Things')
-    {'type': 'collection', 'parts': [{'name': 'Thing', 'type': 'entity', 'id': None}]}
+    Return the type of the path and the entities and ids found.
 
-    >>> parse_sta_url('/v1.0/Datastreams(12345)', prefix='/v1.0')
-    {'type': 'entity', 'parts': [{'name': 'Datastream', 'type': 'entity', 'id': '12345'}]}
+    Examples:
 
-    >>> parse_sta_url('/v1.0/Things(20)/Datastreams', prefix='/v1.0')
-    {'type': 'collection', 'parts': [{'name': 'Thing', 'type': 'entity', 'id': '20'}, \
-{'name': 'Datastream', 'type': 'entity', 'id': None}]}
+    >>> assert parse_sta_url('/Things') == {
+    ...     'type': 'collection',
+    ...     'parts': [
+    ...         {'name': 'Thing', 'type': 'entity', 'id': None}
+    ...     ]
+    ... }
+
+    >>> assert parse_sta_url('/v1.0/Datastreams(12345)', prefix='/v1.0') == {
+    ...     'type': 'entity',
+    ...     'parts': [
+    ...         {'name': 'Datastream', 'type': 'entity', 'id': '12345'}
+    ...     ]
+    ... }
+
+    >>> assert parse_sta_url('/v1.0/Things(20)/Datastreams',
+    ...                      prefix='/v1.0') == {
+    ...     'type': 'collection',
+    ...     'parts': [
+    ...         {'name': 'Thing', 'type': 'entity', 'id': '20'},
+    ...         {'name': 'Datastream', 'type': 'entity', 'id': None}
+    ...     ]
+    ... }
 
     TODO: validate path. e.g.
     - entity names

@@ -38,7 +38,8 @@ class ServicePermissionsViewSet(mixins.CreateModelMixin,
                                 mixins.DestroyModelMixin,
                                 mixins.ListModelMixin,
                                 GenericViewSet):
-    queryset = ClientPermission.objects.filter(client__service__in=Service.objects.all())
+    queryset = ClientPermission.objects.filter(
+        client__service__in=Service.objects.all())
     serializer_class = SerializerPermissionSerializer
 
     def get_queryset(self):
