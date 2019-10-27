@@ -1,18 +1,11 @@
 import hmac
 
 from django.utils.translation import ugettext as _
-from rest_framework import serializers
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
 from .models import Sensor
-
-
-class AuthParametersSerializer(serializers.Serializer):
-    k = serializers.CharField(
-        label="key", help_text="API key")
-    i = serializers.CharField(
-        label="device_id", help_text="device identifier")
+from .serializers import AuthParametersSerializer
 
 
 class SensorUser:
