@@ -59,6 +59,7 @@ class Endpoint(generics.GenericAPIView):
 
         # assert isinstance(request.user, SensorUser)
         sensor = request.user.sensor  # type: Sensor
+        datastreams = sensor.get_datastream_map()
 
         event_time = make_ms_timestamp(params.get('t'))
 
@@ -69,7 +70,7 @@ class Endpoint(generics.GenericAPIView):
             producer.produce(topic=TOPIC, key=sensor.sensor_id, value={
                 'id': next(ids),
                 'time': event_time,
-                'name': name,
+                'datastream': datastreams[prop_key],
                 'value': serializer(prop_value),
             })
         producer.flush()

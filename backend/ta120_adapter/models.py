@@ -41,3 +41,5 @@ class ThingLocation(TimestampedUUIDModel):
 
 class TA120Sensor(Sensor):
     key = models.CharField(max_length=128)
+
+    # See signal_handlers.py and apps.py for connected post_save actions
