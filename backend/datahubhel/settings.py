@@ -80,7 +80,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'datahubhel.core',
-    'datahubhel.dhh_auth',
+    'datahubhel.auth',
     'datahubhel.gatekeeper',
     'datahubhel.mqttauth',
     'datahubhel.service',
@@ -99,7 +99,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-AUTH_USER_MODEL = 'dhh_auth.User'
+AUTH_USER_MODEL = 'datahubhel_auth.User'
 
 TEMPLATES = [
     {
@@ -142,7 +142,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'helusers.oidc.ApiTokenAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'datahubhel.dhh_auth.authentication.UserTokenAuthentication',
+        'datahubhel.auth.authentication.UserTokenAuthentication',
         'datahubhel.service.authentication.ServiceTokenAuthentication',
     ] + ([
         'rest_framework.authentication.SessionAuthentication',
@@ -153,7 +153,7 @@ OIDC_API_TOKEN_AUTH = {
     'AUDIENCE': 'https://api.forumvirium.fi/auth/datahubhel',
     'API_AUTHORIZATION_FIELD': 'https://api.hel.fi/auth',
     'ISSUER': TUNNISTAMO_ISSUER_URL,
-    'USER_RESOLVER': 'dhh_auth.tunnistamo.resolve_user',
+    'USER_RESOLVER': 'datahubhel.auth.tunnistamo.resolve_user',
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -183,12 +183,12 @@ LOGGING = {
             'level': 'WARNING',
             'handlers': ['console'],
         },
-        'gatekeeper': {
+        'datahubhel.gatekeeper': {
             'level': 'INFO',
             'handlers': ['file', 'console'],
             'propagate': False,
         },
-        'mqttauth': {
+        'datahubhel.mqttauth': {
             'level': 'INFO',
             'handlers': ['file', 'console'],
             'propagate': False,

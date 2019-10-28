@@ -120,7 +120,8 @@ def parse_sta_url(url, prefix=None):
 
 
 def get_gatekeeper_sta_prefix():
-    return reverse('gatekeeper:index', kwargs={'path': settings.STA_VERSION})
+    return reverse('datahubhel.gatekeeper:index',
+                   kwargs={'path': settings.STA_VERSION})
 
 
 def get_url_entity_type(url):

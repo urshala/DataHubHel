@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('gatekeeper', '0001_initial'),
+        ('datahubhel_gatekeeper', '0001_initial'),
     ]
 
     operations = [

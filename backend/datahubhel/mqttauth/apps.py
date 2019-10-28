@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class GatekeeperConfig(AppConfig):
+class DataHubHelMqttAuthConfig(AppConfig):
     name = 'datahubhel.mqttauth'
+    label = 'datahubhel_mqttauth'

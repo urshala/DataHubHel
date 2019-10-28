@@ -12,9 +12,9 @@ from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from datahubhel.auth.models import ClientPermission
+from datahubhel.auth.utils import get_perm_obj
 from datahubhel.core.models import Datastream, Thing
-from datahubhel.dhh_auth.models import ClientPermission
-from datahubhel.dhh_auth.utils import get_perm_obj
 
 from .utils import (
     ENTITY_TO_DATASTREAM_PATH,
@@ -48,7 +48,8 @@ class Gatekeeper(APIView):
         path = self.kwargs.pop('path')
 
         self.sts_self_base_url = request.build_absolute_uri(
-            reverse('gatekeeper:index', kwargs={'path': ''})).rstrip('/')
+            reverse('datahubhel.gatekeeper:index',
+                    kwargs={'path': ''})).rstrip('/')
 
         # TODO: validate path
         self.sts_url = '{}/{}'.format(settings.GATEKEEPER_STS_BASE_URL, path)

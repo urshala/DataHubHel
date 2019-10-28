@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gatekeeper', '0001_initial'),
+        ('datahubhel_gatekeeper', '0001_initial'),
     ]
 
     operations = [
