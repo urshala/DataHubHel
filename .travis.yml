@@ -39,7 +39,9 @@ matrix:
 
 install: pip install tox==3.14.0 tox-travis==0.12
 
-script: cd backend && tox
+script:
+  - (cd backend && tox)
+  - (cd kafka-experiments && tox)
 
 after_success:
   - pip install codecov

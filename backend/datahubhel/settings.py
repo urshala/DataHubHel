@@ -23,6 +23,8 @@ env = environ.Env(
     EMAIL_URL=(str, 'consolemail://'),
     SENTRY_DSN=(str, ''),
     TUNNISTAMO_ISSUER_URL=(str, ''),  # Default depends on TIER, see below
+    KAFKA_SERVERS=(str, 'localhost:29092'),
+    SCHEMA_REGISTRY_URL=(str, 'http://localhost:8081'),
 )
 if os.path.exists(env_file):  # pragma: no cover
     env.read_env(env_file)
@@ -47,6 +49,9 @@ RAVEN_CONFIG = {
         stdout=subprocess.PIPE).communicate()[0].decode('utf-8').strip() if (
             os.path.exists(parent_dir('.git'))) else None,
 }
+
+KAFKA_SERVERS = env.str('KAFKA_SERVERS')
+SCHEMA_REGISTRY_URL = env.str('SCHEMA_REGISTRY_URL')
 
 var_root = env.path('VAR_ROOT')
 MEDIA_ROOT = var_root('media')

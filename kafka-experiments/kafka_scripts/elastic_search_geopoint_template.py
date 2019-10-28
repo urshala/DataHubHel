@@ -1,5 +1,10 @@
-import json
+import logging
+
 import requests
+
+from . import settings
+
+LOG = logging.getLogger(__name__)
 
 
 def map_lat_lng_to_geopoints():
@@ -11,7 +16,6 @@ def map_lat_lng_to_geopoints():
     """
     headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
     }
     dynamic_template_mapping = {
             "index_patterns": "*",
@@ -31,12 +35,8 @@ def map_lat_lng_to_geopoints():
                 ]
             }
         }
-    response = requests.put(
-        'http://localhost:9200/_template/geomapping',
-        headers=headers,
-        data=json.dumps(dynamic_template_mapping)
-        )
+    url = f'{settings.ELASTICSEARCH_URL}/_template/geomapping'
+    data = dynamic_template_mapping
+    response = requests.put(url, headers=headers, json=data)
     assert response.status_code == 200
-    print('ELASTICSEARCH:: GEO_POINT MAPPING CREATED')
-    return
-
+    LOG.info("Created geomapping to the ElasticSearch template")

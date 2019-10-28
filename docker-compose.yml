@@ -47,6 +47,8 @@ services:
     environment:
       DATABASE_URL: >-
         postgis://datahubhel:datahubhel@datahubhel-db/datahubhel
+      KAFKA_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
     env_file:
       - "env.${BUILD_TARGET:-development}"
     ports:
@@ -158,6 +160,29 @@ services:
       - "127.0.0.1:5601:5601"
     depends_on:
       - elasticsearch
+
+  kafka-exp:
+    build:
+      context: ./kafka-experiments
+    depends_on:
+      - kafka
+      - schema-registry
+      - ksql-server
+      - kafka-connector
+      - kafka-sink-db
+      - elasticsearch
+    environment:
+      KAFKA_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      KSQL_URL: http://ksql-server:8088
+      KAFKA_CONNECT_URL: http://kafka-connector:8083
+      SINK_DATABASE_URL: postgresql://kafka-sink-db/noisedata
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    env_file:
+      - "env.${BUILD_TARGET:-development}"
+    command: init
+    volumes:
+      - ./kafka-experiments:/app
 
 volumes:
   elasticsearch-data:
