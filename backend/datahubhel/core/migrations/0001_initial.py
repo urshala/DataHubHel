@@ -4,6 +4,7 @@ import uuid
 
 import django.db.models.deletion
 from django.conf import settings
+from django.contrib.gis.db.models.fields import PointField
 from django.db import migrations, models
 from django_extensions.db.fields import (
     CreationDateTimeField,
@@ -20,6 +21,22 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.CreateModel(
+            name='Location',
+            fields=[
+                ('id', models.AutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False, verbose_name='ID')),
+                ('name', models.CharField(
+                    max_length=100,
+                    verbose_name='address')),
+                ('description', models.TextField(blank=True)),
+                ('coordinates', PointField(
+                    blank=True, null=True, srid=4326,
+                    verbose_name='coordinates')),
+            ],
+        ),
         migrations.CreateModel(
             name='Datastream',
             fields=[
@@ -68,6 +85,11 @@ class Migration(migrations.Migration):
                      null=True,
                      on_delete=django.db.models.deletion.CASCADE,
                      to=settings.AUTH_USER_MODEL)),
+                ('location', models.ForeignKey(
+                     to='datahubhel.Location',
+                     on_delete=django.db.models.deletion.PROTECT,
+                     related_name='things',
+                     verbose_name='location')),
             ],
             options={
                 'verbose_name': 'thing',
@@ -90,12 +112,8 @@ class Migration(migrations.Migration):
                     editable=False,
                     primary_key=True,
                     serialize=False)),
-                ('sensor_id', models.CharField(max_length=60, unique=True)),
                 ('name', models.CharField(max_length=60)),
                 ('description', models.TextField(blank=True)),
-                ('thing', models.ForeignKey(
-                    to='datahubhel.Thing',
-                    on_delete=django.db.models.deletion.PROTECT)),
             ],
             options={
                 'abstract': False,
@@ -106,6 +124,7 @@ class Migration(migrations.Migration):
             name='thing',
             field=models.ForeignKey(
                 to='datahubhel.Thing',
+                related_name='datastreams',
                 on_delete=django.db.models.deletion.CASCADE),
         ),
         migrations.AddField(
