@@ -1,11 +1,31 @@
 from typing import Mapping
 
+from django.contrib.gis.db.models import PointField
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from datahubhel.base_models import EntityBase, TimestampedUUIDModel
 
 
+class Location(models.Model):
+    name = models.CharField(verbose_name=_("address"), max_length=100)
+    description = models.TextField(blank=True)
+    coordinates = PointField(
+        verbose_name=_("coordinates"),
+        null=True,
+        blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Thing(EntityBase):
+    location = models.ForeignKey(
+        Location,
+        verbose_name=_("location"),
+        related_name="things",
+        on_delete=models.PROTECT)
+
     class Meta:
         verbose_name = 'thing'
         verbose_name_plural = 'things'
@@ -16,22 +36,21 @@ class Thing(EntityBase):
 
 
 class Sensor(TimestampedUUIDModel):
-    thing = models.ForeignKey(Thing, on_delete=models.PROTECT)
-    sensor_id = models.CharField(max_length=60, unique=True)
     name = models.CharField(max_length=60)
     description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
-    def get_datastream_map(self) -> Mapping[str, int]:
-        return dict(self.datastreams.values_list('name', 'pk'))
-
 
 class Datastream(EntityBase):
-    thing = models.ForeignKey(Thing, on_delete=models.CASCADE)
+    thing = models.ForeignKey(
+        Thing,
+        related_name='datastreams',
+        on_delete=models.CASCADE)
     sensor = models.ForeignKey(
-        Sensor, on_delete=models.CASCADE,
+        Sensor,
+        on_delete=models.CASCADE,
         related_name="datastreams")
 
     class Meta:
