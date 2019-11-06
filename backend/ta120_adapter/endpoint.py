@@ -16,6 +16,7 @@ from .authentication import SensorKeyAuthentication
 from .models import Sensor
 from .properties import DATA_PROPERTIES
 from .serializers import QueryParametersSerializer, SensorDataSerializer
+from .ta120_kafka import create_observation_streams, load_kafka_connectors
 from .ul20 import UltraLight20Parser, UltraLight20Renderer
 from .utils import dump_laeq1s_registers
 
@@ -34,6 +35,7 @@ PROPERTIES: Mapping[str, Tuple[str, Callable[[Any], str]]] = {
 
 
 class Endpoint(generics.GenericAPIView):
+    loaded_ksql_stuffs = False
     parser_classes = [
         UltraLight20Parser,
         FormParser,
@@ -75,6 +77,11 @@ class Endpoint(generics.GenericAPIView):
             })
         producer.flush()
 
+        if not self.__class__.loaded_ksql_stuffs:
+            # Load connectors and scripts only once
+            create_observation_streams()
+            load_kafka_connectors()
+            self.__class__.loaded_ksql_stuffs = True
         return Response()
 
         # Parameters of the sensor can be changed in the response,
