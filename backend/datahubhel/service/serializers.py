@@ -15,6 +15,8 @@ class ServiceSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True,
         view_name='servicetoken-detail',
     )
+    allowed_permissions = serializers.SerializerMethodField()
+    datastreams = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
@@ -25,7 +27,33 @@ class ServiceSerializer(serializers.HyperlinkedModelSerializer):
             'name',
             'description',
             'keys',
+            'datastreams',
+            'allowed_permissions',
         )
+
+    def get_allowed_permissions(self, instance):
+        user = self.context['request'].user
+        allowed_dstream = Datastream.objects.filter(
+            id__in=list(
+                instance.client.clientpermission.values_list(
+                    'object_pk', flat=True
+                )
+            ),
+            owner=user
+        )
+        return DatastreamSerializer(
+            allowed_dstream,
+            many=True,
+            context=self.context
+        ).data
+
+    def get_datastreams(self, instance):
+        user = self.context['request'].user
+        datastream = Datastream.objects.filter(owner=user)
+        return DatastreamSerializer(
+            datastream,
+            many=True,
+            context=self.context).data
 
 
 class ServiceKeySerializer(serializers.HyperlinkedModelSerializer):
