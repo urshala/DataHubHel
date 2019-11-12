@@ -39,12 +39,13 @@ def get_sensor(id=None, name=None):
     )[0]
 
 
-def get_datastream(num=1, thing=None, sensor=None):
+def get_datastream(num=1, thing=None, sensor=None, owner=None):
     return Datastream.objects.get_or_create(
         sts_id=num,
         defaults={
             "thing": thing or get_thing(),
             "sensor": sensor or get_sensor(uuid.uuid4()),
+            "owner": owner,
         },
     )[0]
 

@@ -10,8 +10,7 @@ from rest_framework.status import (
 )
 
 from datahubhel.sta.models import Observation
-
-from .utils import create_observation, get_datastream
+from datahubhel.utils.tests.utils import create_observation, get_datastream
 
 CREATE_OBSERVATION_TABLE = """
     CREATE TABLE IF NOT EXISTS observation (
